@@ -1,0 +1,23 @@
+{
+  "name": "vue-pdf",
+  "version": "1.0.0",
+  "description": "vue.js pdf viewer",
+  "main": "src/pdf.vue",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FranckFreiburger/vue-pdf.git"
+  },
+  "keywords": [
+    "vue.js",
+    "pdf",
+    "viewer"
+  ],
+  "author": "Franck FREIBURGER",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FranckFreiburger/vue-pdf/issues"
+  },
+  "homepage": "https://github.com/FranckFreiburger/vue-pdf#readme"
+}
