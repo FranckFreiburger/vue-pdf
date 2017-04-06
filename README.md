@@ -22,6 +22,10 @@ export default {
 }
 ```
 
+## Demo
+
+[vue-pdf demo on jsfiddle](https://jsfiddle.net/9zm9c1sf/)
+
 ## API
 
 ### props
