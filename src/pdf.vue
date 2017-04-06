@@ -1,6 +1,6 @@
 <script>
 
-function PDFWrapper(PDFJS, canvasElt) {
+function PDFJSWrapper(PDFJS, canvasElt) {
 	
 	var pdfDoc = null;
 	var pdfPage = null;
@@ -165,7 +165,7 @@ module.exports = {
 	},
 	mounted: function() {
 		
-		this.pdf = new PDFWrapper(PDFJS, this.$el.firstElementChild);
+		this.pdf = new PDFJSWrapper(PDFJS, this.$el.firstElementChild);
 		this.pdf.onPassword = this.password;
 		this.pdf.onNumPages = function(numPages) {
 			
