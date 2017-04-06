@@ -1,6 +1,6 @@
 {
   "name": "vue-pdf",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "vue.js pdf viewer",
   "main": "src/pdf.vue",
   "scripts": {},
