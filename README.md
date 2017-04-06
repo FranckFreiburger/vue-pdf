@@ -38,7 +38,7 @@ The page number to display.
 
 #### :password <sup>Function(updatePassword, reason)<sup>
   * `updatePassword`: The function to call with the pdf password.
-  * `reason`: the reason why this function is called 'NEED_PASSWORD' or 'INCORRECT_PASSWORD'
+  * `reason`: the reason why this function is called `'NEED_PASSWORD'` or `'INCORRECT_PASSWORD'`
 
 ### events
 
