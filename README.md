@@ -16,9 +16,9 @@ npm install --save vue-pdf
 import pdf from 'vue-pdf'
 
 export default {
-	components: {
-		pdf
-	}
+  components: {
+    pdf
+  }
 }
 ```
 
