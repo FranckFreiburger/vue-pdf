@@ -26,19 +26,17 @@ export default {
 
 ### props
 
-#### src <sup>String / Object<sup>
+#### :src <sup>String / Object<sup>
 The url of the pdf file. `src` may also be a `string|TypedArray|DocumentInitParameters|PDFDataRangeTransport` for more details, see [`PDFJS.getDocument()`](https://github.com/mozilla/pdf.js/blob/master/src/display/api.js).
 
-#### page <sup>Number<sup>
+#### :page <sup>Number<sup>
 The page number to display.
 
-#### password <sup>Function(updatePassword, reason)<sup>
+#### :password <sup>Function(updatePassword, reason)<sup>
   * `updatePassword`: The function to call with the pdf password.
   * `reason`: the reason why this function is called 'NEED_PASSWORD' or 'INCORRECT_PASSWORD'
 
 ### events
 
-#### numPages
+#### @numPages <sup>Number<sup>
 The total number of pages of the pdf.
-
-
