@@ -125,8 +125,13 @@ function PDFWrapper(PDFJS, canvasElt) {
 	}
 }
 
+const PDFJS = require('pdfjs-dist');
+const resizeSensor = require('vue-resize-sensor');
 
 module.exports = {
+	components: {
+		'resize-sensor': resizeSensor,
+	},
 	template:'<div><canvas></canvas><resize-sensor @resize="resize"></resize-sensor></div>',
 	props: {
 		src: {
