@@ -132,7 +132,7 @@ module.exports = {
 	components: {
 		'resize-sensor': resizeSensor,
 	},
-	template:'<div><canvas></canvas><resize-sensor @resize="resize"></resize-sensor></div>',
+	template:'<div><canvas style="width:100%"></canvas><resize-sensor @resize="resize"></resize-sensor></div>',
 	props: {
 		src: {
 			type: [String, Object],
