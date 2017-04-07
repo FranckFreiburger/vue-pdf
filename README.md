@@ -45,6 +45,17 @@ The page number to display.
 #### @numPages <sup>Number<sup>
 The total number of pages of the pdf.
 
+## To do
+
+- [ ] Simplified non-webpack integration
+- [ ] Added more advanced examples
+- [ ] Sdd `@progress` event
+- [ ] Sdd `:rotate` prop
+- [ ] Make `<resize-sensor>` optional (implies add a `:scale` prop)
+- [ ] Handle resize-sensor event throttle
+- [ ] Buy more coffee
+
+
 ## Credits
 [<img src="https://www.franck-freiburger.com/FF.png" width="16"> Franck Freiburger](https://www.franck-freiburger.com)
 
