@@ -44,3 +44,7 @@ The page number to display.
 
 #### @numPages <sup>Number<sup>
 The total number of pages of the pdf.
+
+## Credits
+[<img src="https://www.franck-freiburger.com/FF.png" width="16"> Franck Freiburger](https://www.franck-freiburger.com)
+
