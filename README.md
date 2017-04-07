@@ -49,8 +49,8 @@ The total number of pages of the pdf.
 
 - [ ] Simplified non-webpack integration
 - [ ] Added more advanced examples
-- [ ] Sdd `@progress` event
-- [ ] Sdd `:rotate` prop
+- [ ] Add `@progress` event
+- [ ] Add `:rotate` prop
 - [ ] Make `<resize-sensor>` optional (implies add a `:scale` prop)
 - [ ] Handle resize-sensor event throttle
 - [ ] Buy more coffee
