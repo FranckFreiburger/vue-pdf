@@ -1,3 +1,7 @@
+<template>
+	<div><canvas style="width:100%"></canvas><resize-sensor @resize="resize"></resize-sensor></div>
+</template>
+
 <script>
 
 function PDFJSWrapper(PDFJS, canvasElt) {
@@ -15,6 +19,11 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 	function clearCanvas() {
 		
 		canvasElt.getContext('2d').clearRect(0, 0, canvasElt.width, canvasElt.height);
+	}
+	
+	this.getResolutionScale = function() {
+		
+		return canvasElt.offsetWidth / canvasElt.width;
 	}
 	
 	this.renderPage = function() {
@@ -132,7 +141,6 @@ module.exports = {
 	components: {
 		'resize-sensor': resizeSensor,
 	},
-	template:'<div><canvas style="width:100%"></canvas><resize-sensor @resize="resize"></resize-sensor></div>',
 	props: {
 		src: {
 			type: [String, Object],
@@ -158,9 +166,11 @@ module.exports = {
 		},
 	},
 	methods: {
-		resize: function(event) {
-			
-			this.pdf.renderPage();
+		resize: function() {
+		
+			var resolutionScale = this.pdf.getResolutionScale();
+			if ( resolutionScale < 0.8 || resolutionScale > 1.2 )
+				this.pdf.renderPage();
 		}
 	},
 	mounted: function() {
