@@ -4,16 +4,22 @@
 
 <script>
 
+const PDFJS = require('pdfjs-dist');
+const resizeSensor = require('vue-resize-sensor');
+
 function PDFJSWrapper(PDFJS, canvasElt) {
 	
 	var pdfDoc = null;
 	var pdfPage = null;
 	var pdfRender = null;
 	
-	this.pdfEvent = function(name) {
-
-		if ( name in this )
-			this[name].apply(this, Array.prototype.slice.call(arguments, 1));
+	this.fireEvent = function(name) {
+		
+		if ( name in this ) {
+			
+			var args = Array.prototype.slice.call(arguments, 1);
+			this[name].apply(this, args);
+		}
 	}
 	
 	function clearCanvas() {
@@ -26,15 +32,20 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 		return canvasElt.offsetWidth / canvasElt.width;
 	}
 	
-	this.renderPage = function() {
-
+	this.renderPage = function(rotate) {
+		
 		if ( pdfRender !== null )
 			return pdfRender.cancel();
 
 		if ( pdfPage === null )
 			return;
 
-		var viewport = pdfPage.getViewport(canvasElt.offsetWidth / pdfPage.getViewport(1).width);
+		if ( rotate === undefined )
+			rotate = 0;
+		
+		var unscaledViewport = pdfPage.getViewport(1);
+		var pageWidth = Math.abs((rotate / 90) % 2) ? unscaledViewport.height : unscaledViewport.width;
+		var viewport = pdfPage.getViewport(canvasElt.offsetWidth / pageWidth, rotate);
 		
 		canvasElt.height = viewport.height;
 		canvasElt.width = viewport.width;
@@ -53,14 +64,12 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 
 			pdfRender = null;
 			if ( err === 'cancelled' )
-				this.renderPage();
-			else
-				this.pdfEvent('onError', err);
-
+				return this.renderPage(rotate);
+			this.fireEvent('onError', err);
 		}.bind(this))
 	}		
 
-	this.loadPage = function(pageNumber) {
+	this.loadPage = function(pageNumber, rotate) {
 		
 		if ( pdfDoc === null )
 			return;
@@ -69,12 +78,13 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 		.then(function(page) {
 
 			pdfPage = page;
-			this.renderPage();
+			this.renderPage(rotate);
+			this.fireEvent('onPageLoaded', page.pageNumber());
 		}.bind(this))
 		.catch(function(err) {
 			
 			clearCanvas();
-			this.pdfEvent('onError', err);
+			this.fireEvent('onError', err);
 		}.bind(this));
 	}
 
@@ -83,7 +93,7 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 		pdfDoc = null;
 		pdfPage = null;
 		
-		this.pdfEvent('onNumPages', undefined);
+		this.fireEvent('onNumPages', undefined);
 
 		if ( !src ) {
 			
@@ -109,33 +119,31 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 							reasonStr = 'INCORRECT_PASSWORD';
 							break;
 					}
-					this.pdfEvent('onPassword', updatePassword, reasonStr);
+					this.fireEvent('onPassword', updatePassword, reasonStr);
 				}
 			}.bind(this);
 		}
 		
 		loadingTask.onProgress = function(status) {
 			
-			this.pdfEvent('onProgress', status);
+			var ratio = status.loaded / status.total;
+			this.fireEvent('onProgress', Math.min(ratio, 1));
 		}.bind(this);
 		
 		loadingTask
 		.then(function(pdf) {
 			
 			pdfDoc = pdf;
-			this.pdfEvent('onNumPages', pdf.numPages);
-			this.pdfEvent('onDocumentLoaded');
+			this.fireEvent('onNumPages', pdf.numPages);
+			this.fireEvent('onDocumentLoaded');
 		}.bind(this))
 		.catch(function(err) {
 			
 			clearCanvas();
-			this.pdfEvent('onError', err);
+			this.fireEvent('onError', err);
 		}.bind(this))
 	}
 }
-
-const PDFJS = require('pdfjs-dist');
-const resizeSensor = require('vue-resize-sensor');
 
 module.exports = {
 	components: {
@@ -150,6 +158,10 @@ module.exports = {
 			type: Number,
 			default: 1,
 		},
+		rotate: {
+			type: Number,
+			default: 0,
+		},
 		password: {
 			type: Function,
 			default: null,
@@ -162,7 +174,11 @@ module.exports = {
 		},
 		page: function() {
 			
-			this.pdf.loadPage(this.page);
+			this.pdf.loadPage(this.page, this.rotate);
+		},
+		rotate: function() {
+			
+			this.pdf.renderPage(this.rotate);
 		},
 	},
 	methods: {
@@ -170,29 +186,24 @@ module.exports = {
 		
 			var resolutionScale = this.pdf.getResolutionScale();
 			if ( resolutionScale < 0.8 || resolutionScale > 1.2 )
-				this.pdf.renderPage();
+				this.pdf.renderPage(this.rotate);
 		}
 	},
 	mounted: function() {
 		
 		this.pdf = new PDFJSWrapper(PDFJS, this.$el.firstElementChild);
 		this.pdf.onPassword = this.password;
-		this.pdf.onNumPages = function(numPages) {
+		this.pdf.onNumPages = this.$emit.bind(this, 'numPages');
+		this.pdf.onProgress = this.$emit.bind(this, 'progress');
+		this.pdf.onError = this.$emit.bind(this, 'error');
+		this.pdf.onDocumentLoaded = this.$emit.bind(this, 'loaded');
+		
+		this.$on('loaded', function() {
 			
-			this.$emit('numPages', numPages);
-		}.bind(this);
+			this.pdf.loadPage(this.page, this.rotate);
+		});
 		
 		this.pdf.loadDocument(this.src);
-		
-		this.pdf.onDocumentLoaded = function() {
-			
-			this.pdf.loadPage(this.page);
-		}.bind(this);
-		
-		this.pdf.onError = function(err) {
-			
-			console.log(err);
-		}
 	}
 }
 
