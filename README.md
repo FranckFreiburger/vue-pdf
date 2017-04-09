@@ -53,6 +53,9 @@ Document loading progress. Range [0, 1].
 #### @loaded
 Triggered when the document is loaded.
 
+#### @pageLoaded <sup>Number<sup>
+Triggered when a page is loaded.
+
 #### @numPages <sup>Number<sup>
 The total number of pages of the pdf.
 

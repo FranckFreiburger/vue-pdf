@@ -27,6 +27,14 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 		canvasElt.getContext('2d').clearRect(0, 0, canvasElt.width, canvasElt.height);
 	}
 	
+	this.destroy = function() {
+		
+		if ( pdfDoc === null )
+			return;
+		pdfDoc.destroy();
+		pdfDoc = null;
+	}
+	
 	this.getResolutionScale = function() {
 		
 		return canvasElt.offsetWidth / canvasElt.width;
@@ -71,6 +79,8 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 
 	this.loadPage = function(pageNumber, rotate) {
 		
+		pdfPage = null;
+		
 		if ( pdfDoc === null )
 			return;
 		
@@ -79,16 +89,17 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 
 			pdfPage = page;
 			this.renderPage(rotate);
-			this.fireEvent('onPageLoaded', page.pageNumber());
+			this.fireEvent('onPageLoaded', page.pageNumber);
 		}.bind(this))
 		.catch(function(err) {
 			
+			pdfPage = null;
 			clearCanvas();
 			this.fireEvent('onError', err);
 		}.bind(this));
 	}
 
-	this.loadDocument = function(src, options) {
+	this.loadDocument = function(src) {
 		
 		pdfDoc = null;
 		pdfPage = null;
@@ -139,6 +150,7 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 		}.bind(this))
 		.catch(function(err) {
 			
+			pdfDoc = null;
 			clearCanvas();
 			this.fireEvent('onError', err);
 		}.bind(this))
@@ -197,6 +209,7 @@ module.exports = {
 		this.pdf.onProgress = this.$emit.bind(this, 'progress');
 		this.pdf.onError = this.$emit.bind(this, 'error');
 		this.pdf.onDocumentLoaded = this.$emit.bind(this, 'loaded');
+		this.pdf.onPageLoaded = this.$emit.bind(this, 'pageLoaded');
 		
 		this.$on('loaded', function() {
 			
@@ -204,6 +217,10 @@ module.exports = {
 		});
 		
 		this.pdf.loadDocument(this.src);
+	},
+	destroyed: function() {
+		
+		this.pdf.destroy();
 	}
 }
 
