@@ -63,6 +63,32 @@ The total number of pages of the pdf.
 Triggered when an error occurred.
 
 
+### Public methods
+
+#### print() **EXPERIMENTAL**
+Prints the current page.
+
+##### example
+```
+<template>
+	<button @click="print">print</button>
+	<pdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"></pdf>
+</template>
+
+<script>
+	...
+	methods: {
+		print() {
+			
+			this.$refs.myPdfComponent.print();
+		}
+	}
+	...
+</script>
+
+```
+
+
 ## To do
 
 - [ ] Simplified non-webpack integration
@@ -73,6 +99,8 @@ Triggered when an error occurred.
 - [ ] Give access to the text content of the page
 - [ ] Make `<resize-sensor>` optional (implies adding a `:scale` prop)
 - [x] Handle resize-sensor event throttle
+- [x] Print the current page
+- [ ] Print the whold document
 - [ ] Buy more coffee
 
 

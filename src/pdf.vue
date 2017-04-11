@@ -40,6 +40,68 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 		return canvasElt.offsetWidth / canvasElt.width;
 	}
 	
+	this.printPage = function() {
+
+		if ( pdfPage === null )
+			return;
+		
+		var PRINT_RESOLUTION = 150; // dpi
+		var PRINT_UNITS = PRINT_RESOLUTION / 72.0;
+		var CSS_UNITS = 96.0 / 72.0;
+		
+		var iframeElt = document.createElement('iframe');
+		
+		iframeElt.frameBorder = '0';
+		iframeElt.scrolling = 'no';
+		iframeElt.width = '1px;'
+		iframeElt.height = '1px;'
+		iframeElt.style.cssText = 'position: absolute; top: 0; left: 0';
+		
+		function removeIframe() {
+
+			iframeElt.parentNode.removeChild(iframeElt);
+		}
+
+		iframeElt.onload = function() {
+			
+			var win = this.contentWindow;
+			var viewport = pdfPage.getViewport(1);
+			
+			var printCanvasElt = win.document.body.appendChild(win.document.createElement('canvas'));
+			printCanvasElt.width = Math.floor(viewport.width * PRINT_UNITS);
+			printCanvasElt.height = Math.floor(viewport.height * PRINT_UNITS);
+			
+			win.document.body.appendChild(document.createElement('style')).textContent = 
+				'@supports ((size:A4) and (size:1pt 1pt)) {' +
+					'@page { size: ' + Math.ceil(printCanvasElt.width / CSS_UNITS) + 'pt ' + Math.ceil(printCanvasElt.height / CSS_UNITS) + 'pt; }' +
+					'body, html { padding: 0; margin: 0 }' +
+				'}';
+
+			pdfPage.render({
+				canvasContext: printCanvasElt.getContext('2d'),
+				transform: [ // Additional transform, applied just before viewport transform.
+					PRINT_UNITS, 0, 0,
+					PRINT_UNITS, 0, 0
+				],
+				viewport: viewport,
+				intent: 'print'
+			})
+			.then(function() {
+				
+				win.focus(); // Required for IE
+				win.print();
+				removeIframe();
+			})
+			.catch(function(err) {
+			
+				removeIframe();
+				this.fireEvent('onError', err);
+			})
+		}
+		
+		window.document.body.appendChild(iframeElt);
+	}
+	
 	this.renderPage = function(rotate) {
 		
 		if ( pdfRender !== null )
@@ -197,8 +259,12 @@ module.exports = {
 		resize: function() {
 		
 			var resolutionScale = this.pdf.getResolutionScale();
-			if ( resolutionScale < 0.8 || resolutionScale > 1.2 )
+			if ( resolutionScale < 0.85 || resolutionScale > 1.15 )
 				this.pdf.renderPage(this.rotate);
+		},
+		print: function() {
+			
+			this.pdf.printPage();
 		}
 	},
 	mounted: function() {
