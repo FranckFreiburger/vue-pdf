@@ -29,7 +29,7 @@ export default {
 ## API
 
 
-### props
+### Props
 
 #### :src <sup>String / Object - default: ''<sup>
 The url of the pdf file. `src` may also be a `string|TypedArray|DocumentInitParameters|PDFDataRangeTransport` for more details, see [`PDFJS.getDocument()`](https://github.com/mozilla/pdf.js/blob/8ff1fbe7f819513e7d0023df961e3d223b35aefa/src/display/api.js#L117).
@@ -45,7 +45,7 @@ The page rotation in degrees, only multiple of 90 are valid.
   * `reason`: the reason why this function is called `'NEED_PASSWORD'` or `'INCORRECT_PASSWORD'`
 
 
-### events
+### Events
 
 #### @progress <sup>Number<sup>
 Document loading progress. Range [0, 1].
@@ -65,7 +65,7 @@ Triggered when an error occurred.
 
 ### Public methods
 
-#### print() **EXPERIMENTAL**
+#### print() * _experimental_ *
 Prints the current page.
 
 ##### example
