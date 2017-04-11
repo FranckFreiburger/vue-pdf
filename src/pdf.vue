@@ -40,6 +40,14 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 		return canvasElt.offsetWidth / canvasElt.width;
 	}
 	
+	this.getPageAspectRatio = function() {
+		
+		if ( pdfPage === null )
+			return 0;
+		var viewport = pdfPage.getViewport(1);
+		return viewport.width / viewport.height;
+	}
+	
 	this.printPage = function() {
 
 		if ( pdfPage === null )
@@ -68,12 +76,12 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 			var viewport = pdfPage.getViewport(1);
 			
 			var printCanvasElt = win.document.body.appendChild(win.document.createElement('canvas'));
-			printCanvasElt.width = Math.floor(viewport.width * PRINT_UNITS);
-			printCanvasElt.height = Math.floor(viewport.height * PRINT_UNITS);
+			printCanvasElt.width = (viewport.width * PRINT_UNITS) - 1;
+			printCanvasElt.height = (viewport.height * PRINT_UNITS) - 1;
 			
 			win.document.body.appendChild(document.createElement('style')).textContent = 
 				'@supports ((size:A4) and (size:1pt 1pt)) {' +
-					'@page { size: ' + Math.ceil(printCanvasElt.width / CSS_UNITS) + 'pt ' + Math.ceil(printCanvasElt.height / CSS_UNITS) + 'pt; }' +
+					'@page { size: ' + (printCanvasElt.width / CSS_UNITS) + 'pt ' + (printCanvasElt.height / CSS_UNITS) + 'pt; }' +
 					'body, html { padding: 0; margin: 0 }' +
 				'}';
 
@@ -112,19 +120,19 @@ function PDFJSWrapper(PDFJS, canvasElt) {
 
 		if ( rotate === undefined )
 			rotate = 0;
-		
+	
 		var unscaledViewport = pdfPage.getViewport(1);
 		var pageWidth = Math.abs((rotate / 90) % 2) ? unscaledViewport.height : unscaledViewport.width;
 		var viewport = pdfPage.getViewport(canvasElt.offsetWidth / pageWidth, rotate);
 		
-		canvasElt.height = viewport.height;
 		canvasElt.width = viewport.width;
+		canvasElt.height = viewport.height;
 
 		pdfRender = pdfPage.render({
 			canvasContext: canvasElt.getContext('2d'),
 			viewport: viewport
 		});
-		
+
 		pdfRender
 		.then(function() {
 			
@@ -256,8 +264,14 @@ module.exports = {
 		},
 	},
 	methods: {
-		resize: function() {
-		
+		resize: function(size) {
+			
+			// on IE10- canvas height must be set
+			var pageAspectRatio = this.pdf.getPageAspectRatio();
+			if ( pageAspectRatio !== 0 )
+				this.$el.firstElementChild.style.height = size.width / pageAspectRatio + 'px';
+			
+			// update the page when the resolution is too poor
 			var resolutionScale = this.pdf.getResolutionScale();
 			if ( resolutionScale < 0.85 || resolutionScale > 1.15 )
 				this.pdf.renderPage(this.rotate);
