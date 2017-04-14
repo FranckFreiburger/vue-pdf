@@ -3,9 +3,6 @@
 </template>
 
 <style>
-.vuePdfAnnotationLayer {
-		transform-origin: 0 0;
-}
 
 /* see https://github.com/mozilla/pdf.js/blob/55a853b6678cf3d05681ffbb521e5228e607b5d2/test/annotation_layer_test.css */
 
@@ -422,6 +419,8 @@ module.exports = {
 		}
 	},
 	mounted: function() {
+		
+		PDFJS.CustomStyle.setProp('transform-origin', this.$el.childNodes[1], '0 0');
 		
 		this.pdf = new PDFJSWrapper(PDFJS, this.$el.childNodes[0], this.$el.childNodes[1]);
 		this.pdf.onPassword = this.password;
