@@ -1,15 +1,15 @@
 <template>
-	<div style="position: relative"><canvas style="width:100%"></canvas><div class="annotationLayer"></div><resize-sensor @resize="resize"></resize-sensor></div>
+	<div style="position: relative"><canvas style="width:100%"></canvas><div class="vuePdfAnnotationLayer"></div><resize-sensor @resize="resize"></resize-sensor></div>
 </template>
 
 <style>
-.annotationLayer {
+.vuePdfAnnotationLayer {
 		transform-origin: 0 0;
 }
 
 /* see https://github.com/mozilla/pdf.js/blob/55a853b6678cf3d05681ffbb521e5228e607b5d2/test/annotation_layer_test.css */
 
-.annotationLayer {
+.vuePdfAnnotationLayer {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -17,11 +17,11 @@
 	bottom: 0;
 }
 
-.annotationLayer > section {
+.vuePdfAnnotationLayer > section {
 	position: absolute;
 }
 
-.annotationLayer .linkAnnotation > a {
+.vuePdfAnnotationLayer .linkAnnotation > a {
 	position: absolute;
 	font-size: 1em;
 	top: 0;
@@ -33,15 +33,15 @@
 	box-shadow: 0px 2px 10px #ff0;
 }
 
-.annotationLayer .textAnnotation img {
+.vuePdfAnnotationLayer .textAnnotation img {
 	position: absolute;
 }
 
-.annotationLayer .textWidgetAnnotation input,
-.annotationLayer .textWidgetAnnotation textarea,
-.annotationLayer .choiceWidgetAnnotation select,
-.annotationLayer .buttonWidgetAnnotation.checkBox input,
-.annotationLayer .buttonWidgetAnnotation.radioButton input {
+.vuePdfAnnotationLayer .textWidgetAnnotation input,
+.vuePdfAnnotationLayer .textWidgetAnnotation textarea,
+.vuePdfAnnotationLayer .choiceWidgetAnnotation select,
+.vuePdfAnnotationLayer .buttonWidgetAnnotation.checkBox input,
+.vuePdfAnnotationLayer .buttonWidgetAnnotation.radioButton input {
 	background-color: rgba(0, 54, 255, 0.13);
 	border: 1px solid transparent;
 	box-sizing: border-box;
@@ -52,46 +52,46 @@
 	width: 100%;
 }
 
-.annotationLayer .textWidgetAnnotation textarea {
+.vuePdfAnnotationLayer .textWidgetAnnotation textarea {
 	font: message-box;
 	font-size: 9px;
 	resize: none;
 }
 
-.annotationLayer .textWidgetAnnotation input[disabled],
-.annotationLayer .textWidgetAnnotation textarea[disabled],
-.annotationLayer .choiceWidgetAnnotation select[disabled],
-.annotationLayer .buttonWidgetAnnotation.checkBox input[disabled],
-.annotationLayer .buttonWidgetAnnotation.radioButton input[disabled] {
+.vuePdfAnnotationLayer .textWidgetAnnotation input[disabled],
+.vuePdfAnnotationLayer .textWidgetAnnotation textarea[disabled],
+.vuePdfAnnotationLayer .choiceWidgetAnnotation select[disabled],
+.vuePdfAnnotationLayer .buttonWidgetAnnotation.checkBox input[disabled],
+.vuePdfAnnotationLayer .buttonWidgetAnnotation.radioButton input[disabled] {
 	background: none;
 	border: 1px solid transparent;
 }
 
-.annotationLayer .textWidgetAnnotation input.comb {
+.vuePdfAnnotationLayer .textWidgetAnnotation input.comb {
 	font-family: monospace;
 	padding-left: 2px;
 	padding-right: 0;
 }
 
-.annotationLayer .buttonWidgetAnnotation.checkBox input,
-.annotationLayer .buttonWidgetAnnotation.radioButton input {
+.vuePdfAnnotationLayer .buttonWidgetAnnotation.checkBox input,
+.vuePdfAnnotationLayer .buttonWidgetAnnotation.radioButton input {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	-ms-appearance: none;
 	appearance: none;
 }
 
-.annotationLayer .popupAnnotation {
+.vuePdfAnnotationLayer .popupAnnotation {
 	display: block !important;
 }
 
-.annotationLayer .popupWrapper {
+.vuePdfAnnotationLayer .popupWrapper {
 	display: block !important;
 	position: absolute;
 	width: 20em;
 }
 
-.annotationLayer .popup {
+.vuePdfAnnotationLayer .popup {
 	position: absolute;
 	z-index: 200;
 	max-width: 20em;
@@ -104,14 +104,14 @@
 	word-wrap: break-word;
 }
 
-.annotationLayer .popup h1 {
+.vuePdfAnnotationLayer .popup h1 {
 	font-size: 1em;
 	border-bottom: 1px solid #000000;
 	margin: 0;
 	padding: 0 0 0.2em 0;
 }
 
-.annotationLayer .popup p {
+.vuePdfAnnotationLayer .popup p {
 	margin: 0;
 	padding: 0.2em 0 0 0;
 }
@@ -259,7 +259,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
 		
 		pdfPage.getAnnotations()
 		.then(function(annotations) {
-			
+
 			PDFJS.AnnotationLayer.render({
 				viewport: viewport.clone({ dontFlip: true }),
 				div: annotationLayerElt,
