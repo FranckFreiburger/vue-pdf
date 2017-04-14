@@ -120,8 +120,8 @@
 
 <script>
 
-const PDFJS = require('pdfjs-dist');
-const resizeSensor = require('vue-resize-sensor');
+var PDFJS = require('pdfjs-dist');
+var resizeSensor = require('vue-resize-sensor');
 
 function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
 	
