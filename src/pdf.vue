@@ -413,8 +413,8 @@ module.exports = {
 			var resolutionScale = this.pdf.getResolutionScale();
 			if ( resolutionScale < 0.85 || resolutionScale > 1.15 )
 				this.pdf.renderPage(this.rotate);
-			
-			this.$el.childNodes[1].style.transform = 'scale('+resolutionScale+')';
+
+			PDFJS.CustomStyle.setProp('transform', this.$el.childNodes[1], 'scale('+resolutionScale+')');
 		},
 		print: function() {
 			
