@@ -252,6 +252,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
 			viewport: viewport
 		});
 		
+		annotationLayerElt.style.visibility = 'hidden';
 		clearAnnotations();
 		
 		pdfPage.getAnnotations()
@@ -270,6 +271,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
 		pdfRender
 		.then(function() {
 			
+			annotationLayerElt.style.visibility = '';
 			pdfRender = null;
 		})
 		.catch(function(err) {
