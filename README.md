@@ -72,21 +72,9 @@ Prints the current page.
 ##### example
 ```
 <template>
-	<button @click="print">print</button>
+	<button @click="$refs.myPdfComponent.print()">print</button>
 	<pdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"></pdf>
 </template>
-
-<script>
-	...
-	methods: {
-		print() {
-			
-			this.$refs.myPdfComponent.print();
-		}
-	}
-	...
-</script>
-
 ```
 
 
