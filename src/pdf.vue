@@ -319,6 +319,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		.catch(function(err) {
 			
 			clearCanvas();
+			clearAnnotations();
 			emitEvent('error', err);
 		});
 	}
@@ -370,6 +371,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		.catch(function(err) {
 			
 			clearCanvas();
+			clearAnnotations();
 			emitEvent('error', err);
 		})
 	}
@@ -441,6 +443,7 @@ module.exports = {
 		var annotationLayerElt = this.$el.childNodes[1];
 		
 		this.pdf = new PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, this.$emit.bind(this));
+		
 		this.$on('loaded', function() {
 			
 			this.pdf.loadPage(this.page, this.rotate);
