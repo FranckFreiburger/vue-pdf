@@ -40,12 +40,11 @@ The page number to display.
 #### :rotate <sup>Number - default: 0<sup>
 The page rotation in degrees, only multiple of 90 are valid.
 
-#### :password <sup>Function(updatePassword, reason) - default: null<sup>
+### Events
+
+#### @password <sup>(updatePassword, reason)<sup>
   * `updatePassword`: The function to call with the pdf password.
   * `reason`: the reason why this function is called `'NEED_PASSWORD'` or `'INCORRECT_PASSWORD'`
-
-
-### Events
 
 #### @progress <sup>Number<sup>
 Document loading progress. Range [0, 1].
