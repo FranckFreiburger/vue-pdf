@@ -147,7 +147,7 @@ export default {
 - [ ] Make `<resize-sensor>` optional (implies adding a `:scale` prop)
 - [x] Handle resize-sensor event throttle
 - [x] Print the current page
-- [ ] Print the whole document
+- [x] Print the whole document
 - [ ] Buy more coffee
 
 
