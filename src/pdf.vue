@@ -1,12 +1,12 @@
 <template>
-	<div style="position: relative"><canvas style="width:100%"></canvas><div class="vuePdfAnnotationLayer"></div><resize-sensor @resize="resize"></resize-sensor></div>
+	<div style="position: relative"><canvas style="width: 100%; display: block"></canvas><div class="annotationLayer"></div><resize-sensor @resize="resize"></resize-sensor></div>
 </template>
 
 <style>
 
 /* see https://github.com/mozilla/pdf.js/blob/55a853b6678cf3d05681ffbb521e5228e607b5d2/test/annotation_layer_test.css */
 
-.vuePdfAnnotationLayer {
+.annotationLayer {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -14,105 +14,140 @@
 	bottom: 0;
 }
 
-.vuePdfAnnotationLayer > section {
-	position: absolute;
+.annotationLayer section {
+  position: absolute;
 }
 
-.vuePdfAnnotationLayer .linkAnnotation > a {
-	position: absolute;
-	font-size: 1em;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	opacity: 0.2;
-	background: #ff0;
-	box-shadow: 0px 2px 10px #ff0;
+.annotationLayer .linkAnnotation > a {
+  position: absolute;
+  font-size: 1em;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.vuePdfAnnotationLayer .textAnnotation img {
-	position: absolute;
+.annotationLayer .linkAnnotation > a /* -ms-a */  {
+  background: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7") 0 0 repeat;
 }
 
-.vuePdfAnnotationLayer .textWidgetAnnotation input,
-.vuePdfAnnotationLayer .textWidgetAnnotation textarea,
-.vuePdfAnnotationLayer .choiceWidgetAnnotation select,
-.vuePdfAnnotationLayer .buttonWidgetAnnotation.checkBox input,
-.vuePdfAnnotationLayer .buttonWidgetAnnotation.radioButton input {
-	background-color: rgba(0, 54, 255, 0.13);
-	border: 1px solid transparent;
-	box-sizing: border-box;
-	font-size: 9px;
-	height: 100%;
-	padding: 0 3px;
-	vertical-align: top;
-	width: 100%;
+.annotationLayer .linkAnnotation > a:hover {
+  opacity: 0.2;
+  background: #ff0;
+  box-shadow: 0px 2px 10px #ff0;
 }
 
-.vuePdfAnnotationLayer .textWidgetAnnotation textarea {
-	font: message-box;
-	font-size: 9px;
-	resize: none;
+.annotationLayer .textAnnotation img {
+  position: absolute;
+  cursor: pointer;
 }
 
-.vuePdfAnnotationLayer .textWidgetAnnotation input[disabled],
-.vuePdfAnnotationLayer .textWidgetAnnotation textarea[disabled],
-.vuePdfAnnotationLayer .choiceWidgetAnnotation select[disabled],
-.vuePdfAnnotationLayer .buttonWidgetAnnotation.checkBox input[disabled],
-.vuePdfAnnotationLayer .buttonWidgetAnnotation.radioButton input[disabled] {
-	background: none;
-	border: 1px solid transparent;
+.annotationLayer .textWidgetAnnotation input,
+.annotationLayer .textWidgetAnnotation textarea,
+.annotationLayer .choiceWidgetAnnotation select,
+.annotationLayer .buttonWidgetAnnotation.checkBox input,
+.annotationLayer .buttonWidgetAnnotation.radioButton input {
+  background-color: rgba(0, 54, 255, 0.13);
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  font-size: 9px;
+  height: 100%;
+  padding: 0 3px;
+  vertical-align: top;
+  width: 100%;
 }
 
-.vuePdfAnnotationLayer .textWidgetAnnotation input.comb {
-	font-family: monospace;
-	padding-left: 2px;
-	padding-right: 0;
+.annotationLayer .textWidgetAnnotation textarea {
+  font: message-box;
+  font-size: 9px;
+  resize: none;
 }
 
-.vuePdfAnnotationLayer .buttonWidgetAnnotation.checkBox input,
-.vuePdfAnnotationLayer .buttonWidgetAnnotation.radioButton input {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	-ms-appearance: none;
-	appearance: none;
+.annotationLayer .textWidgetAnnotation input[disabled],
+.annotationLayer .textWidgetAnnotation textarea[disabled],
+.annotationLayer .choiceWidgetAnnotation select[disabled],
+.annotationLayer .buttonWidgetAnnotation.checkBox input[disabled],
+.annotationLayer .buttonWidgetAnnotation.radioButton input[disabled] {
+  background: none;
+  border: 1px solid transparent;
+  cursor: not-allowed;
 }
 
-.vuePdfAnnotationLayer .popupAnnotation {
-	display: block !important;
+.annotationLayer .textWidgetAnnotation input:hover,
+.annotationLayer .textWidgetAnnotation textarea:hover,
+.annotationLayer .choiceWidgetAnnotation select:hover,
+.annotationLayer .buttonWidgetAnnotation.checkBox input:hover,
+.annotationLayer .buttonWidgetAnnotation.radioButton input:hover {
+  border: 1px solid #000;
 }
 
-.vuePdfAnnotationLayer .popupWrapper {
-	display: block !important;
-	position: absolute;
-	width: 20em;
+.annotationLayer .textWidgetAnnotation input:focus,
+.annotationLayer .textWidgetAnnotation textarea:focus,
+.annotationLayer .choiceWidgetAnnotation select:focus {
+  background: none;
+  border: 1px solid transparent;
 }
 
-.vuePdfAnnotationLayer .popup {
-	position: absolute;
-	z-index: 200;
-	max-width: 20em;
-	background-color: #FFFF99;
-	box-shadow: 0px 2px 5px #333;
-	border-radius: 2px;
-	padding: 0.6em;
-	margin-left: 5px;
-	font: message-box;
-	word-wrap: break-word;
+.annotationLayer .textWidgetAnnotation input.comb {
+  font-family: monospace;
+  padding-left: 2px;
+  padding-right: 0;
 }
 
-.vuePdfAnnotationLayer .popup h1 {
-	font-size: 1em;
-	border-bottom: 1px solid #000000;
-	margin: 0;
-	padding: 0 0 0.2em 0;
+.annotationLayer .textWidgetAnnotation input.comb:focus {
+  /*
+   * Letter spacing is placed on the right side of each character. Hence, the
+   * letter spacing of the last character may be placed outside the visible
+   * area, causing horizontal scrolling. We avoid this by extending the width
+   * when the element has focus and revert this when it loses focus.
+   */
+  width: 115%;
 }
 
-.vuePdfAnnotationLayer .popup p {
-	margin: 0;
-	padding: 0.2em 0 0 0;
+.annotationLayer .buttonWidgetAnnotation.checkBox input,
+.annotationLayer .buttonWidgetAnnotation.radioButton input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
 }
 
+.annotationLayer .popupWrapper {
+  position: absolute;
+  width: 20em;
+}
+
+.annotationLayer .popup {
+  position: absolute;
+  z-index: 200;
+  max-width: 20em;
+  background-color: #FFFF99;
+  box-shadow: 0px 2px 5px #333;
+  border-radius: 2px;
+  padding: 0.6em;
+  margin-left: 5px;
+  cursor: pointer;
+  word-wrap: break-word;
+}
+
+.annotationLayer .popup h1 {
+  font-size: 1em;
+  border-bottom: 1px solid #000000;
+  padding-bottom: 0.2em;
+}
+
+.annotationLayer .popup p {
+  padding-top: 0.2em;
+}
+
+.annotationLayer .highlightAnnotation,
+.annotationLayer .underlineAnnotation,
+.annotationLayer .squigglyAnnotation,
+.annotationLayer .strikeoutAnnotation,
+.annotationLayer .lineAnnotation svg line,
+.annotationLayer .fileAttachmentAnnotation {
+  cursor: pointer;
+}
 </style>
 
 <script>
@@ -120,21 +155,12 @@
 var PDFJS = require('pdfjs-dist');
 var resizeSensor = require('vue-resize-sensor');
 
-function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
+function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 	
 	var pdfDoc = null;
 	var pdfPage = null;
 	var pdfRender = null;
-	
-	this.fireEvent = function(name) {
-		
-		if ( name in this ) {
-			
-			var args = Array.prototype.slice.call(arguments, 1);
-			this[name].apply(this, args);
-		}
-	}
-	
+
 	function clearCanvas() {
 		
 		canvasElt.getContext('2d').clearRect(0, 0, canvasElt.width, canvasElt.height);
@@ -158,15 +184,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
 		
 		return canvasElt.offsetWidth / canvasElt.width;
 	}
-	
-	this.getPageAspectRatio = function() {
-		
-		if ( pdfPage === null )
-			return 0;
-		var viewport = pdfPage.getViewport(1);
-		return viewport.width / viewport.height;
-	}
-	
+
 	this.printPage = function() {
 
 		if ( pdfPage === null )
@@ -195,12 +213,13 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
 			var viewport = pdfPage.getViewport(1);
 			
 			var printCanvasElt = win.document.body.appendChild(win.document.createElement('canvas'));
-			printCanvasElt.width = (viewport.width * PRINT_UNITS) - 1;
-			printCanvasElt.height = (viewport.height * PRINT_UNITS) - 1;
+			printCanvasElt.style.display = 'block';
+			printCanvasElt.width = (viewport.width * PRINT_UNITS);
+			printCanvasElt.height = (viewport.height * PRINT_UNITS);
 			
 			win.document.body.appendChild(document.createElement('style')).textContent = 
 				'@supports ((size:A4) and (size:1pt 1pt)) {' +
-					'@page { size: ' + (printCanvasElt.width / CSS_UNITS) + 'pt ' + (printCanvasElt.height / CSS_UNITS) + 'pt; }' +
+					'@page { margin: 0; size: ' + (printCanvasElt.width / CSS_UNITS) + 'pt ' + (printCanvasElt.height / CSS_UNITS) + 'pt; }' +
 					'body, html { padding: 0; margin: 0 }' +
 				'}';
 
@@ -222,7 +241,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
 			.catch(function(err) {
 			
 				removeIframe();
-				this.fireEvent('onError', err);
+				emitEvent('error', err);
 			})
 		}
 		
@@ -239,10 +258,10 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
 
 		if ( rotate === undefined )
 			rotate = 0;
-	
-		var unscaledViewport = pdfPage.getViewport(1);
-		var pageWidth = Math.abs((rotate / 90) % 2) ? unscaledViewport.height : unscaledViewport.width;
-		var viewport = pdfPage.getViewport(canvasElt.offsetWidth / pageWidth, rotate);
+
+		var viewport = pdfPage.getViewport(canvasElt.offsetWidth / pdfPage.getViewport(1).width, rotate);
+
+		emitEvent('pageSize', viewport.width, viewport.height);
 		
 		canvasElt.width = viewport.width;
 		canvasElt.height = viewport.height;
@@ -279,7 +298,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
 			pdfRender = null;
 			if ( err === 'cancelled' )
 				return this.renderPage(rotate);
-			this.fireEvent('onError', err);
+			emitEvent('error', err);
 		}.bind(this))
 	}		
 
@@ -295,14 +314,13 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
 
 			pdfPage = page;
 			this.renderPage(rotate);
-			this.fireEvent('onPageLoaded', page.pageNumber);
+			emitEvent('pageLoaded', page.pageNumber);
 		}.bind(this))
 		.catch(function(err) {
 			
-			pdfPage = null;
 			clearCanvas();
-			this.fireEvent('onError', err);
-		}.bind(this));
+			emitEvent('error', err);
+		});
 	}
 
 	this.loadDocument = function(src) {
@@ -310,7 +328,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
 		pdfDoc = null;
 		pdfPage = null;
 		
-		this.fireEvent('onNumPages', undefined);
+		emitEvent('numPages', undefined);
 
 		if ( !src ) {
 			
@@ -322,46 +340,41 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt) {
 		
 		var loadingTask = PDFJS.getDocument(src);
 		
-		if ( this.onPassword ) {
+		loadingTask.onPassword = function(updatePassword, reason) {
 			
-			loadingTask.onPassword = function(updatePassword, reason) {
-				
-				if ( this.onPassword ) {
-				
-					var reasonStr;
-					switch (reason) {
-						case PDFJS.PasswordResponses.NEED_PASSWORD:
-							reasonStr = 'NEED_PASSWORD';
-							break;
-						case PDFJS.PasswordResponses.INCORRECT_PASSWORD:
-							reasonStr = 'INCORRECT_PASSWORD';
-							break;
-					}
-					this.fireEvent('onPassword', updatePassword, reasonStr);
-				}
-			}.bind(this);
-		}
+			var reasonStr;
+			switch (reason) {
+				case PDFJS.PasswordResponses.NEED_PASSWORD:
+					reasonStr = 'NEED_PASSWORD';
+					break;
+				case PDFJS.PasswordResponses.INCORRECT_PASSWORD:
+					reasonStr = 'INCORRECT_PASSWORD';
+					break;
+			}
+			emitEvent('password', updatePassword, reasonStr);
+		};
 		
 		loadingTask.onProgress = function(status) {
 			
 			var ratio = status.loaded / status.total;
-			this.fireEvent('onProgress', Math.min(ratio, 1));
-		}.bind(this);
+			emitEvent('progress', Math.min(ratio, 1));
+		}
 		
 		loadingTask
 		.then(function(pdf) {
 			
 			pdfDoc = pdf;
-			this.fireEvent('onNumPages', pdf.numPages);
-			this.fireEvent('onDocumentLoaded');
-		}.bind(this))
+			emitEvent('numPages', pdf.numPages);
+			emitEvent('loaded');
+		})
 		.catch(function(err) {
 			
-			pdfDoc = null;
 			clearCanvas();
-			this.fireEvent('onError', err);
-		}.bind(this))
+			emitEvent('error', err);
+		})
 	}
+	
+	PDFJS.CustomStyle.setProp('transform-origin', annotationLayerElt, '0 0');
 }
 
 module.exports = {
@@ -402,18 +415,20 @@ module.exports = {
 	},
 	methods: {
 		resize: function(size) {
-			
+	
+			var canvasElt = this.$el.childNodes[0];
+			var annotationLayerElt = this.$el.childNodes[1];
+
 			// on IE10- canvas height must be set
-			var pageAspectRatio = this.pdf.getPageAspectRatio();
-			if ( pageAspectRatio !== 0 )
-				this.$el.childNodes[0].style.height = size.width / pageAspectRatio + 'px';
-			
+			canvasElt.style.height = canvasElt.offsetWidth * (canvasElt.height / canvasElt.width) + 'px';
+
 			// update the page when the resolution is too poor
 			var resolutionScale = this.pdf.getResolutionScale();
+			
 			if ( resolutionScale < 0.85 || resolutionScale > 1.15 )
 				this.pdf.renderPage(this.rotate);
 
-			PDFJS.CustomStyle.setProp('transform', this.$el.childNodes[1], 'scale('+resolutionScale+')');
+			PDFJS.CustomStyle.setProp('transform', annotationLayerElt, 'scale('+resolutionScale+')');
 		},
 		print: function() {
 			
@@ -422,19 +437,18 @@ module.exports = {
 	},
 	mounted: function() {
 		
-		PDFJS.CustomStyle.setProp('transform-origin', this.$el.childNodes[1], '0 0');
+		var canvasElt = this.$el.childNodes[0];
+		var annotationLayerElt = this.$el.childNodes[1];
 		
-		this.pdf = new PDFJSWrapper(PDFJS, this.$el.childNodes[0], this.$el.childNodes[1]);
-		this.pdf.onPassword = this.password;
-		this.pdf.onNumPages = this.$emit.bind(this, 'numPages');
-		this.pdf.onProgress = this.$emit.bind(this, 'progress');
-		this.pdf.onError = this.$emit.bind(this, 'error');
-		this.pdf.onDocumentLoaded = this.$emit.bind(this, 'loaded');
-		this.pdf.onPageLoaded = this.$emit.bind(this, 'pageLoaded');
-		
+		this.pdf = new PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, this.$emit.bind(this));
 		this.$on('loaded', function() {
 			
 			this.pdf.loadPage(this.page, this.rotate);
+		});
+		
+		this.$on('pageSize', function(width, height) {
+			
+			canvasElt.style.height = canvasElt.offsetWidth * (height / width) + 'px';
 		});
 		
 		this.pdf.loadDocument(this.src);
