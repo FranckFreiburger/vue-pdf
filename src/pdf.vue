@@ -190,6 +190,8 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		if ( pdfPage === null )
 			return;
 		
+		// 1in == 72pt
+		// 1in == 96px
 		var PRINT_RESOLUTION = dpi === undefined ? 150 : dpi;
 		var PRINT_UNITS = PRINT_RESOLUTION / 72.0;
 		var CSS_UNITS = 96.0 / 72.0;
@@ -202,12 +204,13 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		}
 		
 		new Promise(function(resolve, reject) {
-			
+
 			iframeElt.frameBorder = '0';
 			iframeElt.scrolling = 'no';
-			iframeElt.width = '1px;'
-			iframeElt.height = '1px;'
+			iframeElt.width = '0px;' 
+			iframeElt.height = '0px;'
 			iframeElt.style.cssText = 'position: absolute; top: 0; left: 0';
+
 			iframeElt.onload = function() {
 				
 				resolve(this.contentWindow);
@@ -217,11 +220,37 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		})
 		.then(function(win) {
 			
+			win.document.title = '';
+
+			return pdfDoc.getPage(1)
+			.then(function(page) {
+				
+				var viewport = page.getViewport(1);
+				win.document.head.appendChild(win.document.createElement('style')).textContent = 
+					'@supports ((size:A4) and (size:1pt 1pt)) {' +
+						'@page { margin: 1pt; size: ' + ((viewport.width * PRINT_UNITS) / CSS_UNITS) + 'pt ' + ((viewport.height * PRINT_UNITS) / CSS_UNITS) + 'pt; }' +
+					'}' +
+
+					'@media print {' +
+						'body { margin: 0 }' +
+						'canvas { page-break-before: avoid; page-break-after: always; page-break-inside: avoid }' +
+					'}'+
+
+					'@media screen {' +
+						'body { margin: 0 }' +
+					'}'+
+
+					''
+				return win;
+			})
+		})
+		.then(function(win) {
+			
 			var allPages = [];
 			
 			for ( var pageNumber = 1; pageNumber <= pdfDoc.numPages; ++pageNumber ) {
 				
-				if ( pageNumberOnly !== undefined && pageNumberOnly !== pageNumber )
+				if ( pageNumberOnly !== undefined && pageNumberOnly.indexOf(pageNumber) === -1 )
 					continue;
 				
 				allPages.push(
@@ -231,21 +260,8 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 						var viewport = page.getViewport(1);
 					
 						var printCanvasElt = win.document.body.appendChild(win.document.createElement('canvas'));
-						printCanvasElt.style.display = 'block';
-						printCanvasElt.width = (viewport.width * PRINT_UNITS) - 1;
-						printCanvasElt.height = (viewport.height * PRINT_UNITS) - 1;
-						
-						if ( page.pageNumber === 1 ) {
-							
-							win.document.head.appendChild(win.document.createElement('style')).textContent = 
-								'@supports ((size:A4) and (size:1pt 1pt)) {' +
-									'@page { margin: 0; size: ' + (printCanvasElt.width / CSS_UNITS) + 'pt ' + (printCanvasElt.height / CSS_UNITS) + 'pt; }' +
-									'body, html { padding: 0; margin: 0 }' +
-								'}' +
-								'@media print {' +
-									'canvas { page-break-before: avoid; page-break-after: always; page-break-inside: avoid; }' +
-								'}'
-						}
+						printCanvasElt.width = (viewport.width * PRINT_UNITS);
+						printCanvasElt.height = (viewport.height * PRINT_UNITS);
 
 						return page.render({
 							canvasContext: printCanvasElt.getContext('2d'),
@@ -265,7 +281,6 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 				
 				win.focus(); // Required for IE
 				win.print();
-				
 				removeIframe();
 			})
 			.catch(function(err) {
@@ -462,7 +477,7 @@ module.exports = {
 		},
 		print: function() {
 			
-			this.pdf.printPage(150, undefined);
+			this.pdf.printPage(100, [1,2,3]);
 		}
 	},
 	mounted: function() {
