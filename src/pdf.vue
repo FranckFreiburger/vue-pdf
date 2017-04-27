@@ -151,6 +151,7 @@
 </style>
 
 <script>
+"use strict";
 
 var PDFJS = require('pdfjs-dist');
 var resizeSensor = require('vue-resize-sensor');
