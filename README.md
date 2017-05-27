@@ -24,7 +24,7 @@ export default {
 
 ## Demo
 
-[vue-pdf demo on jsfiddle](https://jsfiddle.net/9zm9c1sf/)
+[vue-pdf demo on jsfiddle](https://jsfiddle.net/9zm9c1sf/24/)
 
 ## Browser support
 Same browser support as [Vue.js 2](https://github.com/vuejs/vue/blob/dev/README.md)
