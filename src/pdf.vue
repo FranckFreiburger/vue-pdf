@@ -153,7 +153,7 @@
 <script>
 "use strict";
 
-var PDFJS = require('pdfjs-dist');
+var PDFJS = require('pdfjs-dist/webpack.js');
 var resizeSensor = require('vue-resize-sensor');
 
 function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
