@@ -66,8 +66,9 @@ Triggered when an error occurred.
 
 ### Public methods
 
-#### print() * _experimental_ *
-Prints the current page.
+#### print(dpi, pageList) * _experimental_ *
+  * `dpi`: the print rezolution of the document (try 100).
+  * `pageList`: the list (array) of pages to print.
 
 ##### example
 ```

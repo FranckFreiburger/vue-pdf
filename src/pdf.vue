@@ -476,9 +476,9 @@ module.exports = {
 
 			PDFJS.CustomStyle.setProp('transform', annotationLayerElt, 'scale('+resolutionScale+')');
 		},
-		print: function() {
-			
-			this.pdf.printPage(100, [1,2,3]);
+		print: function(dpi, pageList) {
+
+			this.pdf.printPage(dpi, pageList);
 		}
 	},
 	mounted: function() {
