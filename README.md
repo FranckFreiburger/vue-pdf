@@ -78,6 +78,14 @@ Triggered when an error occurred.
 </template>
 ```
 
+##### example with multiple pages
+```
+<template>
+	<button @click="$refs.myPdfComponent.print(100, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])">print</button>
+	<pdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"></pdf>
+</template>
+```
+
 ## Example - complete
 ```
 <template>
