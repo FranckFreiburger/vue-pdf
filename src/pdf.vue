@@ -418,6 +418,11 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 			clearAnnotations();
 			emitEvent('error', err);
 		})
+		.then(function() {
+			
+			loadingTask._worker = null;
+		})
+		
 	}
 	
 	PDFJS.CustomStyle.setProp('transform-origin', annotationLayerElt, '0 0');
