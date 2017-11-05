@@ -1,5 +1,5 @@
 <template>
-	<div style="position: relative"><canvas style="width: 100%; display: block"></canvas><div class="annotationLayer"></div><resize-sensor @resize="resize"></resize-sensor></div>
+	<div style="position: relative"><canvas style="width: 100%; display: block"></canvas><div class="annotationLayer"></div><resize-sensor initial @resize="resize"></resize-sensor></div>
 </template>
 
 <style>
