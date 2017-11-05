@@ -29,6 +29,9 @@ export default {
 ## Browser support
 Same browser support as [Vue.js 2](https://github.com/vuejs/vue/blob/dev/README.md)
 
+## Note
+since v2.x, the script is exported as esm.
+
 ## API
 
 ### Props
