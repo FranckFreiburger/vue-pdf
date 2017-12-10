@@ -170,6 +170,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 	var pdfDoc = null;
 	var pdfPage = null;
 	var pdfRender = null;
+	var isSharedDoc = false;
 
 	function clearCanvas() {
 		
@@ -186,7 +187,8 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		
 		if ( pdfDoc === null )
 			return;
-		pdfDoc.destroy();
+		if(!isSharedDoc)
+			pdfDoc.destroy();
 		pdfDoc = null;
 	}
 	
@@ -418,6 +420,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		.then(function(pdf) {
 			
 			pdfDoc = pdf;
+			isSharedDoc = false;
 			emitEvent('numPages', pdf.numPages);
 			emitEvent('loaded');
 		})
@@ -427,6 +430,25 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 			clearAnnotations();
 			emitEvent('error', err);
 		})
+	}
+
+	this.setSharedDocument = function(doc) {
+		pdfDoc = null;
+		pdfPage = null;
+
+		emitEvent('numPages', undefined);
+		
+		if ( !doc ) {
+			canvasElt.removeAttribute('width');
+			canvasElt.removeAttribute('height');
+			clearAnnotations();
+			return;
+		}
+
+		pdfDoc = doc; 
+		isSharedDoc = true;
+		emitEvent('numPages', doc.numPages);
+		emitEvent('loaded');
 	}
 	
 	PDFJS.CustomStyle.setProp('transform-origin', annotationLayerElt, '0 0');
@@ -440,6 +462,10 @@ export default {
 		src: {
 			type: [String, Object],
 			default: '',
+		},
+		doc: {
+			type: Object,
+			default: null
 		},
 		page: {
 			type: Number,
@@ -456,8 +482,10 @@ export default {
 	},
 	watch: {
 		src: function() {
-			
 			this.pdf.loadDocument(this.src);
+		},
+		doc: function() {
+			this.pdf.setSharedDocument(this.doc)
 		},
 		page: function() {
 			
@@ -491,7 +519,6 @@ export default {
 		}
 	},
 	mounted: function() {
-		
 		var canvasElt = this.$el.childNodes[0];
 		var annotationLayerElt = this.$el.childNodes[1];
 		
@@ -507,10 +534,12 @@ export default {
 			canvasElt.style.height = canvasElt.offsetWidth * (height / width) + 'px';
 		});
 		
-		this.pdf.loadDocument(this.src);
+		if(this.src)
+			this.pdf.loadDocument(this.src);
+		else if (this.doc)
+			this.pdf.setSharedDocument(this.doc)
 	},
 	destroyed: function() {
-		
 		this.pdf.destroy();
 	}
 }
