@@ -224,22 +224,5 @@ export default {
 </script>
 ```
 
-
-## To do
-
-- [ ] Simplified non-webpack integration
-- [x] Added more advanced examples
-- [x] Add `@progress` event
-- [x] Add `:rotate` prop
-- [x] Handle PDF.js errors
-- [ ] Give access to the text content of the page
-- [ ] Make `<resize-sensor>` optional (implies adding a `:scale` prop)
-- [x] Handle resize-sensor event throttle
-- [x] Print the current page
-- [x] Print the whole document
-- [ ] Buy more coffee
-
-
 ## Credits
 [<img src="https://www.franck-freiburger.com/FF.png" width="16"> Franck Freiburger](https://www.franck-freiburger.com)
-
