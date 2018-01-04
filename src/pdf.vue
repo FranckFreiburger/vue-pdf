@@ -429,7 +429,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		})
 	}
 	
-	PDFJS.CustomStyle.setProp('transform-origin', annotationLayerElt, '0 0');
+	annotationLayerElt.style.transformOrigin = '0 0';
 }
 
 export default {
@@ -483,7 +483,7 @@ export default {
 			if ( resolutionScale < 0.85 || resolutionScale > 1.15 )
 				this.pdf.renderPage(this.rotate);
 
-			PDFJS.CustomStyle.setProp('transform', annotationLayerElt, 'scale('+resolutionScale+')');
+			annotationLayerElt.style.transform = 'scale('+resolutionScale+')';
 		},
 		print: function(dpi, pageList) {
 
