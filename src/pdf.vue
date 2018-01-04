@@ -314,7 +314,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 
 		var viewport = pdfPage.getViewport(canvasElt.offsetWidth / pdfPage.getViewport(1).width, rotate);
 
-		emitEvent('pageSize', viewport.width, viewport.height);
+		emitEvent('page-size', viewport.width, viewport.height);
 		
 		canvasElt.width = viewport.width;
 		canvasElt.height = viewport.height;
@@ -367,7 +367,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 
 			pdfPage = page;
 			this.renderPage(rotate);
-			emitEvent('pageLoaded', page.pageNumber);
+			emitEvent('page-loaded', page.pageNumber);
 		}.bind(this))
 		.catch(function(err) {
 			
@@ -382,7 +382,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		pdfDoc = null;
 		pdfPage = null;
 		
-		emitEvent('numPages', undefined);
+		emitEvent('num-pages', undefined);
 
 		if ( !src ) {
 			
@@ -418,7 +418,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		.then(function(pdf) {
 			
 			pdfDoc = pdf;
-			emitEvent('numPages', pdf.numPages);
+			emitEvent('num-pages', pdf.numPages);
 			emitEvent('loaded');
 		})
 		.catch(function(err) {
@@ -502,7 +502,7 @@ export default {
 			this.pdf.loadPage(this.page, this.rotate);
 		});
 		
-		this.$on('pageSize', function(width, height) {
+		this.$on('page-size', function(width, height) {
 			
 			canvasElt.style.height = canvasElt.offsetWidth * (height / width) + 'px';
 		});
