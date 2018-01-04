@@ -355,6 +355,24 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		}.bind(this))
 	}		
 
+
+	this.forEachPage = function(pageCallback) {
+
+		var numPages = pdfDoc.pdfInfo.numPages;
+
+		(function next(pageNum) {
+
+			pdfDoc.getPage(pageNum)
+			.then(pageCallback)
+			.then(function() {
+				
+				if ( ++pageNum <= numPages )
+					next(pageNum);
+			})
+		})(1);
+	}
+
+
 	this.loadPage = function(pageNumber, rotate) {
 		
 		pdfPage = null;
