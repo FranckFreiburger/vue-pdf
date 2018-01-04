@@ -467,10 +467,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		password: {
-			type: Function,
-			default: null,
-		},
 	},
 	watch: {
 		src: function() {
