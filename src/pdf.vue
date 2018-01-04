@@ -1,7 +1,3 @@
-<template>
-	<div style="position: relative"><canvas style="width: 100%; display: block"></canvas><div class="annotationLayer"></div><resize-sensor initial @resize="resize"></resize-sensor></div>
-</template>
-
 <style>
 
 /* see https://github.com/mozilla/pdf.js/blob/55a853b6678cf3d05681ffbb521e5228e607b5d2/test/annotation_layer_test.css */
@@ -451,8 +447,29 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 }
 
 export default {
-	components: {
-		'resize-sensor': resizeSensor,
+	render(h) {
+		return h('div', {
+			attrs: {
+				style: 'position: relative'
+			}
+		}, [
+			h('canvas', {
+				attrs: {
+					style: 'display: block; width: 100%'
+				}
+			}),
+			h('div', {
+				class: 'annotationLayer'
+			}),
+			h(resizeSensor, {
+				props: {
+					initial: true,
+				},
+				on: {
+					resize: this.resize
+				},
+			})
+		])
 	},
 	props: {
 		src: {
