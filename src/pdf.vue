@@ -310,10 +310,14 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 
 		var viewport = pdfPage.getViewport(canvasElt.offsetWidth / pdfPage.getViewport(1).width, rotate);
 
-		emitEvent('page-size', viewport.width, viewport.height);
+		var devicePixelRatio = window.devicePixelRatio || 1;
+		var pageWidth = viewport.width * devicePixelRatio;
+		var pageHeight = viewport.height * devicePixelRatio;
 		
-		canvasElt.width = viewport.width;
-		canvasElt.height = viewport.height;
+		emitEvent('page-size', pageWidth, pageHeight);
+		
+		canvasElt.width = pageWidth;
+		canvasElt.height = pageHeight;
 
 		pdfRender = pdfPage.render({
 			canvasContext: canvasElt.getContext('2d'),
@@ -463,7 +467,7 @@ export default {
 			}),
 			h(resizeSensor, {
 				props: {
-					initial: true,
+					initial: true
 				},
 				on: {
 					resize: this.resize
