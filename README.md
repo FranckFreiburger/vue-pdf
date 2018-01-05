@@ -73,6 +73,13 @@ Triggered when an error occurred.
   * `dpi`: the print rezolution of the document (try 100).
   * `pageList`: the list (array) of pages to print.
 
+### Public static methods
+
+#### createLoadingTask(src)
+  * `src`: see :src prop
+  This function creates a PDFJS loading task that can be used and reused as :src property. 
+
+
 ##### example
 ```
 <template>
@@ -113,7 +120,34 @@ export default {
 </script>
 ```
 
-##### example with multiple pages
+##### example - display multiple pages of the same pdf document
+```
+<template>
+	<div>
+		<pdf v-for="i in 4" :key="i" :src="pdfSrc" :page="i"></pdf>
+	</div>
+</template>
+
+<script>
+
+import pdf from 'vue-pdf'
+
+export default {
+	components: {
+		pdf
+	},
+	data() {
+		return {
+			pdfSrc: pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf')
+		}
+	}
+}
+
+</script>
+```
+
+
+##### example - print multiple pages
 ```
 <template>
 	<button @click="$refs.myPdfComponent.print(100, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])">print</button>

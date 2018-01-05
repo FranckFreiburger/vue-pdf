@@ -161,6 +161,26 @@ if ( process.env.VUE_ENV === 'server' ) {
 }
 
 
+function isPDFDocumentLoadingTask(obj) {
+
+	return typeof(obj) === 'object' && obj !== null && obj.__PDFDocumentLoadingTask === true;
+}
+
+function createLoadingTask(src, options) {
+
+	var loadingTask = PDFJS.getDocument(src);
+	loadingTask.__PDFDocumentLoadingTask = true; // since PDFDocumentLoadingTask is not public
+	
+	if ( options && options.onPassword )
+		loadingTask.onPassword = options.onPassword;
+
+	if ( options && options.onProgress )
+		loadingTask.onProgress = options.onProgress;
+
+	return loadingTask;
+}
+
+
 function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 	
 	var pdfDoc = null;
@@ -410,26 +430,31 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 			return;
 		}
 		
-		var loadingTask = PDFJS.getDocument(src);
-		
-		loadingTask.onPassword = function(updatePassword, reason) {
-			
-			var reasonStr;
-			switch (reason) {
-				case PDFJS.PasswordResponses.NEED_PASSWORD:
-					reasonStr = 'NEED_PASSWORD';
-					break;
-				case PDFJS.PasswordResponses.INCORRECT_PASSWORD:
-					reasonStr = 'INCORRECT_PASSWORD';
-					break;
-			}
-			emitEvent('password', updatePassword, reasonStr);
-		};
-		
-		loadingTask.onProgress = function(status) {
-			
-			var ratio = status.loaded / status.total;
-			emitEvent('progress', Math.min(ratio, 1));
+		if ( isPDFDocumentLoadingTask(src) ) {
+
+			var loadingTask = src;
+		} else {
+
+			var loadingTask = createLoadingTask(src, {
+				onPassword: function(updatePassword, reason) {
+					
+					var reasonStr;
+					switch (reason) {
+						case PDFJS.PasswordResponses.NEED_PASSWORD:
+							reasonStr = 'NEED_PASSWORD';
+							break;
+						case PDFJS.PasswordResponses.INCORRECT_PASSWORD:
+							reasonStr = 'INCORRECT_PASSWORD';
+							break;
+					}
+					emitEvent('password', updatePassword, reasonStr);
+				},
+				onProgress: function(status) {
+					
+					var ratio = status.loaded / status.total;
+					emitEvent('progress', Math.min(ratio, 1));
+				}
+			});
 		}
 		
 		loadingTask
@@ -451,6 +476,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 }
 
 export default {
+	createLoadingTask,
 	render(h) {
 		return h('div', {
 			attrs: {
