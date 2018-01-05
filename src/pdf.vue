@@ -484,8 +484,9 @@ export default {
 			}
 		}, [
 			h('canvas', {
-				attrs: {
-					style: 'display: block; width: 100%'
+				style: {
+					display: 'block',
+					width: '100%',
 				}
 			}),
 			h('div', {
