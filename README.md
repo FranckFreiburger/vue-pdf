@@ -76,19 +76,14 @@ Triggered when an error occurred.
 ### Public static methods
 
 #### createLoadingTask(src)
-  * `src`: see :src prop
-  This function creates a PDFJS loading task that can be used and reused as :src property. 
+  * `src`: see `:src` prop  
+  This function creates a PDFJS loading task that can be used and reused as `:src` property.  
+  The loading task is a promise that resolves with the PDFJS pdf document that exposes the `numPages` property (see example below).
 
 
-##### example
-```
-<template>
-	<button @click="$refs.myPdfComponent.print()">print</button>
-	<pdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"></pdf>
-</template>
-```
+## Examples
 
-##### example - current page / page count
+##### Example - current page / page count
 ```
 <template>
 	<div>
@@ -120,7 +115,8 @@ export default {
 </script>
 ```
 
-##### example - display multiple pages of the same pdf document
+
+##### Example - display multiple pages of the same pdf document
 ```
 <template>
 	<div>
@@ -163,7 +159,16 @@ export default {
 ```
 
 
-##### example - print multiple pages
+##### Example - print all pages
+```
+<template>
+	<button @click="$refs.myPdfComponent.print()">print</button>
+	<pdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"></pdf>
+</template>
+```
+
+
+##### Example - print multiple pages
 ```
 <template>
 	<button @click="$refs.myPdfComponent.print(100, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])">print</button>
@@ -216,7 +221,7 @@ export default {
 ```
 
 
-## Example - complete
+##### Example - complete
 ```
 <template>
 	<div>
