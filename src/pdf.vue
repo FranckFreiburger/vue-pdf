@@ -186,6 +186,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 	var pdfDoc = null;
 	var pdfPage = null;
 	var pdfRender = null;
+	var canceling = false;
 
 	function clearCanvas() {
 		
@@ -319,8 +320,14 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 	
 	this.renderPage = function(rotate) {
 		
-		if ( pdfRender !== null )
-			return pdfRender.cancel();
+		if ( pdfRender !== null ) {
+
+			if ( canceling )
+				return;
+			canceling = true;
+			pdfRender.cancel();
+			return;
+		}
 
 		if ( pdfPage === null )
 			return;
@@ -366,8 +373,12 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		.catch(function(err) {
 
 			pdfRender = null;
-			if ( err === 'cancelled' )
-				return this.renderPage(rotate);
+			if ( err === 'cancelled' ) {
+
+				canceling = false;
+				this.renderPage(rotate);
+				return;
+			}
 			emitEvent('error', err);
 		}.bind(this))
 	}		
