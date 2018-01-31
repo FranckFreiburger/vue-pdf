@@ -484,8 +484,8 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 }
 
 export default {
-	createLoadingTask,
-	render(h) {
+	createLoadingTask: createLoadingTask,
+	render: function(h) {
 		return h('div', {
 			attrs: {
 				style: 'position: relative'
