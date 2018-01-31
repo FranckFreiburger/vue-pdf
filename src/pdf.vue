@@ -373,7 +373,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		.catch(function(err) {
 
 			pdfRender = null;
-			if ( err === 'cancelled' ) {
+			if ( err instanceof PDFJS.RenderingCancelledException ) {
 
 				canceling = false;
 				this.renderPage(rotate);
