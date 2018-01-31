@@ -495,10 +495,12 @@ export default {
 				style: {
 					display: 'block',
 					width: '100%',
-				}
+				},
+				ref:'canvas'
 			}),
 			h('div', {
-				class: 'annotationLayer'
+				class: 'annotationLayer',
+				ref:'annotationLayer'
 			}),
 			h(resizeSensor, {
 				props: {
@@ -541,11 +543,8 @@ export default {
 	methods: {
 		resize: function(size) {
 	
-			var canvasElt = this.$el.childNodes[0];
-			var annotationLayerElt = this.$el.childNodes[1];
-
 			// on IE10- canvas height must be set
-			canvasElt.style.height = canvasElt.offsetWidth * (canvasElt.height / canvasElt.width) + 'px';
+			this.$refs.canvas.style.height = this.$refs.canvas.offsetWidth * (this.$refs.canvas.height / this.$refs.canvas.width) + 'px';
 
 			// update the page when the resolution is too poor
 			var resolutionScale = this.pdf.getResolutionScale();
@@ -553,7 +552,7 @@ export default {
 			if ( resolutionScale < 0.85 || resolutionScale > 1.15 )
 				this.pdf.renderPage(this.rotate);
 
-			annotationLayerElt.style.transform = 'scale('+resolutionScale+')';
+			this.$refs.annotationLayer.style.transform = 'scale('+resolutionScale+')';
 		},
 		print: function(dpi, pageList) {
 
@@ -562,10 +561,7 @@ export default {
 	},
 	mounted: function() {
 		
-		var canvasElt = this.$el.childNodes[0];
-		var annotationLayerElt = this.$el.childNodes[1];
-		
-		this.pdf = new PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, this.$emit.bind(this));
+		this.pdf = new PDFJSWrapper(PDFJS, this.$refs.canvas, this.$refs.annotationLayer, this.$emit.bind(this));
 		
 		this.$on('loaded', function() {
 			
@@ -574,7 +570,7 @@ export default {
 		
 		this.$on('page-size', function(width, height) {
 			
-			canvasElt.style.height = canvasElt.offsetWidth * (height / width) + 'px';
+			this.$refs.canvas.style.height = this.$refs.canvas.offsetWidth * (height / width) + 'px';
 		});
 		
 		this.pdf.loadDocument(this.src);
