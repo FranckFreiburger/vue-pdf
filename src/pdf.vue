@@ -543,6 +543,10 @@ export default {
 	methods: {
 		resize: function(size) {
 	
+			// check if the element is attached to the dom tree
+			if ( this.$el.parentNode === null )
+				return;
+
 			// on IE10- canvas height must be set
 			this.$refs.canvas.style.height = this.$refs.canvas.offsetWidth * (this.$refs.canvas.height / this.$refs.canvas.width) + 'px';
 
