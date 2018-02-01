@@ -325,7 +325,12 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 			if ( canceling )
 				return;
 			canceling = true;
-			pdfRender.cancel();
+
+			setTimeout(function() {
+
+				if ( canceling )
+					pdfRender.cancel();
+			})
 			return;
 		}
 
@@ -368,6 +373,7 @@ function PDFJSWrapper(PDFJS, canvasElt, annotationLayerElt, emitEvent) {
 		.then(function() {
 			
 			annotationLayerElt.style.visibility = '';
+			canceling = false;
 			pdfRender = null;
 		})
 		.catch(function(err) {
