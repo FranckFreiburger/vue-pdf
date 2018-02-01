@@ -22,5 +22,8 @@
   "dependencies": {
     "pdfjs-dist": "^2.0.303",
     "vue-resize-sensor": "^2.0.0"
+  },
+  "devDependencies": {
+    "raw-loader": "^0.5.1"
   }
 }
