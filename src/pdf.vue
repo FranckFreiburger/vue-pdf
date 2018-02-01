@@ -150,6 +150,7 @@
 "use strict";
 
 import resizeSensor from 'vue-resize-sensor'
+import { CMapCompressionType } from 'pdfjs-dist/lib/shared/util';
 
 if ( process.env.VUE_ENV === 'server' ) {
 
@@ -160,13 +161,6 @@ if ( process.env.VUE_ENV === 'server' ) {
 	var PDFJS = require('pdfjs-dist/webpack.js');
 }
 
-
-
-var CMapCompressionType = {
-	NONE: 0,
-	BINARY: 1,
-	STREAM: 2,
-};
 
 function isPDFDocumentLoadingTask(obj) {
 
@@ -189,7 +183,7 @@ function createLoadingTask(src, options) {
 
 		this.fetch = function(query) {
 
-			return import('raw!pdfjs-dist/cmaps/'+query.name+'.bcmap' /* webpackChunkName: "noprefetch-[request]" */)
+			return import('raw-loader!pdfjs-dist/cmaps/'+query.name+'.bcmap' /* webpackChunkName: "noprefetch-[request]" */)
 			.then(function(bcmap) {
 
 				return {
