@@ -24,6 +24,7 @@
     "vue-resize-sensor": "^2.0.0"
   },
   "devDependencies": {
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0-beta.39",
     "raw-loader": "^0.5.1"
   }
 }
