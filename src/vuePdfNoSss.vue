@@ -1,3 +1,4 @@
+<style src="./annotationLayer.css"></style>
 <script>
 
 	import componentFactory from './componentFactory.js'

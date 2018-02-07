@@ -1,5 +1,4 @@
 import resizeSensor from 'vue-resize-sensor'
-import './annotationLayer.css'
 
 export default function(pdfjsWrapper) {
 
