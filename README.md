@@ -2,24 +2,23 @@
 vue.js pdf viewer
 
 ## Install
-```
+```bash
 npm install --save vue-pdf
 ```
 
 ## Example - basic
-```
+```js
 <template>
-  <pdf src="./static/relativity.pdf"></pdf>
+  <vue-pdf src="./static/relativity.pdf" />
 </template>
 
 <script>
-import pdf from 'vue-pdf'
-
-export default {
-  components: {
-    pdf
+  import VuePdf from 'vue-pdf'
+  export default {
+    components: {
+      VuePdf
+    }
   }
-}
 ```
 
 ## Demo
@@ -31,41 +30,23 @@ Same browser support as [Vue.js 2](https://github.com/vuejs/vue/blob/dev/README.
 
 ## Note
 since v2.x, the script is exported as esm.
-
 ## API
-
 ### Props
-
-#### :src <sup>String / Object - default: ''<sup>
-The url of the pdf file. `src` may also be a `string|TypedArray|DocumentInitParameters|PDFDataRangeTransport` for more details, see [`PDFJS.getDocument()`](https://github.com/mozilla/pdf.js/blob/8ff1fbe7f819513e7d0023df961e3d223b35aefa/src/display/api.js#L117).
-
-#### :page <sup>Number - default: 1<sup>
-The page number to display.
-
-#### :rotate <sup>Number - default: 0<sup>
-The page rotation in degrees, only multiple of 90 are valid.
+|Name|Type|Default|Description|
+|---|---|------|----------|
+|src | Object \|\| String | Null | The url of the pdf file. 
+|number| Number | 1|The page number to display.
+|rotate| Number | 0|The page rotation in degrees, only multiple of 90 are valid.
 
 ### Events
-
-#### @password <sup>(updatePassword, reason)<sup>
-  * `updatePassword`: The function to call with the pdf password.
-  * `reason`: the reason why this function is called `'NEED_PASSWORD'` or `'INCORRECT_PASSWORD'`
-
-#### @progress <sup>Number<sup>
-Document loading progress. Range [0, 1].
-
-#### @loaded
-Triggered when the document is loaded.
-
-#### @page-loaded <sup>Number<sup>
-Triggered when a page is loaded.
-
-#### @num-pages <sup>Number<sup>
-The total number of pages of the pdf.
-
-#### @error <sup>Object<sup>
-Triggered when an error occurred.
-
+|Name|Attributes|Listen to|Description|
+|---|---|------|----------|
+|Password | (updatePassword, reason) | @password | The url of the pdf file.<br/> **`updatePassword`**: The function to call with the pdf password. <br/> **`reason`:** the reason why this function is called `'NEED_PASSWORD'` or `'INCORRECT_PASSWORD'`
+|Progress|Number|@progress|Document loading progress. Range [0, 1].|
+|Loaded|Null|@loaded|Triggered when the document is loaded.|
+|Page Loaded|Number|@page-loaded|Triggered when a page is loaded.|
+|Number Pages|Number|@num-pages|The total number of pages of the pdf.|
+|Error|Object|@error|Triggered when an error occurred.|
 
 ### Public methods
 
@@ -84,35 +65,30 @@ Triggered when an error occurred.
 ## Examples
 
 ##### Example - current page / page count
-```
+```js
 <template>
-	<div>
-		{{currentPage}} / {{pageCount}}
-		<pdf
-			src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"
-			@num-pages="pageCount = $event"
-			@page-loaded="currentPage = $event"
-		></pdf>
-	</div>
+    <div>
+    	{{currentPage}} / {{pageCount}}
+	<pdf
+	  src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"
+	  @num-pages="pageCount = $event"
+	  @page-loaded="currentPage = $event" />
+    </div>
 </template>
 
 <script>
 
 import pdf from 'vue-pdf'
-
 export default {
-	components: {
-		pdf
-	},
-	data() {
-		return {
-			currentPage: 0,
-			pageCount: 0,
-		}
-	}
+  data() {
+    return {
+      currentPage: 0,
+      pageCount: 0
+      }
+    }
 }
-
 </script>
+
 ```
 
 
