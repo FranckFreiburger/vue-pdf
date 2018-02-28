@@ -89,7 +89,7 @@ export default {
 ```
 
 ##### Example - display multiple pages of the same pdf document
-```
+```js
 <template>
   <div>
     <vue-pdf
@@ -124,7 +124,7 @@ export default {
 ```
 
 ##### Example - print all pages
-```
+```js
 <template>
   <div>
     <button @click="$refs.myPdfComponent.print()">print</button>
@@ -134,7 +134,7 @@ export default {
 ```
 
 ##### Example - print multiple pages
-```
+```js
 <template>
   <div>
     <button 
@@ -150,7 +150,7 @@ export default {
 
 
 ##### Example - get text content
-```
+```js
 <template>
   <div>
     <button @click="logContent">log content</button>
@@ -184,7 +184,7 @@ export default {
 
 
 ##### Example - complete
-```
+```js
 <template>
   <div>
     <input type="checkbox" v-model="show">
