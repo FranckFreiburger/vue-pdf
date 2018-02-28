@@ -41,7 +41,7 @@ since v2.x, the script is exported as esm.
 ### Events
 |Name|Attributes|Listen to|Description|
 |---|---|------|----------|
-|Password | (updatePassword, reason) | @password | The url of the pdf file.<br/> **`updatePassword`**: The function to call with the pdf password. <br/> **`reason`:** the reason why this function is called `'NEED_PASSWORD'` or `'INCORRECT_PASSWORD'`
+|Password | (updatePassword, reason) | @password | The url of the pdf file.<br/> `updatePassword`: The function to call with the pdf password. <br/> `reason`: the reason why this function is called `'NEED_PASSWORD'` or `'INCORRECT_PASSWORD'`
 |Progress|Number|@progress|Document loading progress. Range [0, 1].|
 |Loaded|Null|@loaded|Triggered when the document is loaded.|
 |Page Loaded|Number|@page-loaded|Triggered when a page is loaded.|
@@ -49,13 +49,14 @@ since v2.x, the script is exported as esm.
 |Error|Object|@error|Triggered when an error occurred.|
 
 ### Public methods
-
-#### print(dpi, pageList) * _experimental_ *
-  * `dpi`: the print rezolution of the document (try 100).
-  * `pageList`: the list (array) of pages to print.
+|Name|Parameters|Description|
+|----|----------|-----------|
+|print|dpi, pageList|  * _experimental_ *<br/> `dpi`: the print rezolution of the document (try 100).<br/> `pageList`: the list (array) of pages to print.|
 
 ### Public static methods
-
+|Name|Parameters|Description|
+|----|----------|-----------|
+|createLoadingTask|src|`src`: see `:src` prop This function creates a PDFJS loading task that can be used and reused as `:src` property.<br/>The loading task is a promise that resolves with the PDFJS pdf document that exposes the `numPages` property (see example below).|
 #### createLoadingTask(src)
   * `src`: see `:src` prop  
   This function creates a PDFJS loading task that can be used and reused as `:src` property.  
@@ -67,26 +68,27 @@ since v2.x, the script is exported as esm.
 ##### Example - current page / page count
 ```js
 <template>
-    <div>
-    	{{currentPage}} / {{pageCount}}
-	<pdf
-	  src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"
-	  @num-pages="pageCount = $event"
-	  @page-loaded="currentPage = $event" />
+  <div>
+    {{currentPage}} / {{pageCount}}
+	  <pdf
+	    src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"
+	    @num-pages="pageCount = $event"
+	    @page-loaded="currentPage = $event" />
     </div>
 </template>
 
 <script>
-
-import pdf from 'vue-pdf'
-export default {
-  data() {
-    return {
-      currentPage: 0,
-      pageCount: 0
+  import VuePdf from 'vue-pdf'
+  export default {
+    data() {
+      return {
+        currentPage: 0,
+        pageCount: 0
       }
-    }
-}
+    },
+    components: {
+    VuePdf
+  }
 </script>
 
 ```
@@ -96,41 +98,33 @@ export default {
 ```
 <template>
 	<div>
-		<pdf
+		<vue-pdf
 			v-for="i in numPages"
 			:key="i"
 			:src="src"
 			:page="i"
-			style="display: inline-block; width: 25%"
-		></pdf>
+			style="display: inline-block; width: 25%" />
 	</div>
 </template>
 
 <script>
-
-import pdf from 'vue-pdf'
-
-var loadingTask = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf');
-
-export default {
-	components: {
-		pdf
-	},
-	data() {
-		return {
-			src: loadingTask,
-			numPages: undefined,
-		}
-	},
-	mounted() {
-
-		this.src.then(pdf => {
-
-			this.numPages = pdf.numPages;
-		});
-	}
-}
-
+  import VuePdf from 'vue-pdf'
+  var loadingTask = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf');
+  export default {
+	  data() {
+		  return {
+			  src: loadingTask,
+			  numPages: undefined,
+		  }
+	  mounted() {
+		  this.src.then(pdf => {
+			  this.numPages = pdf.numPages;
+		 });
+	  },
+	  components: {
+		  VuePdf
+	  }
+  }
 </script>
 ```
 
@@ -139,7 +133,7 @@ export default {
 ```
 <template>
 	<button @click="$refs.myPdfComponent.print()">print</button>
-	<pdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"></pdf>
+	<vue-pdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf" />
 </template>
 ```
 
@@ -148,7 +142,7 @@ export default {
 ```
 <template>
 	<button @click="$refs.myPdfComponent.print(100, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])">print</button>
-	<pdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"></pdf>
+	<vue-pdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf" />
 </template>
 ```
 
@@ -157,39 +151,31 @@ export default {
 ```
 <template>
 	<div>
-		<button
-			@click="logContent"
-		>
+		<button @click="logContent">
 			log content
 		</button>
-		<pdf
+		<vue-pdf
 			ref="myPdfComponent"
-			src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"
-		></pdf>
+			src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf" />
 	</div>
 </template>
 
 <script>
-
-import pdf from 'vue-pdf'
-
+import VuePdf from 'vue-pdf'
 export default {
-	components: {
-		pdf
-	},
 	methods: {
 		logContent() {
-
 			this.$refs.myPdfComponent.pdf.forEachPage(function(page) {
-
 				return page.getTextContent()
 				.then(function(content) {
-
 					var text = content.items.map(item => item.str);
 					console.log(text);
 				})
 			});
 		}
+	},
+	components: {
+		VuePdf
 	}
 }
 
@@ -210,18 +196,29 @@ export default {
 		<button @click="rotate -= 90">&#x27F2;</button>
 		<button @click="$refs.pdf.print()">print</button>
 		<div style="width: 50%">
-			<div v-if="loadedRatio > 0 && loadedRatio < 1" style="background-color: green; color: white; text-align: center" :style="{ width: loadedRatio * 100 + '%' }">{{ Math.floor(loadedRatio * 100) }}%</div>
-			<pdf v-if="show" ref="pdf" style="border: 1px solid red" :src="src" :page="page" :rotate="rotate" @password="password" @progress="loadedRatio = $event" @error="error" @num-pages="numPages = $event"></pdf>
+			<div 
+        v-if="loadedRatio > 0 && loadedRatio < 1" 
+        style="background-color: green; color: white; text-align: center" 
+        :style="{ width: loadedRatio * 100 + '%' }">
+          {{ Math.floor(loadedRatio * 100) }}%
+       </div>
+			<vue-pdf 
+        v-if="show" 
+        ref="pdf" 
+        style="border: 1px solid red" 
+        :src="src" :page="page" 
+        :rotate="rotate" 
+        @password="password" 
+        @progress="loadedRatio = $event" 
+        @error="error" 
+        @num-pages="numPages = $event" />
 		</div>
 	</div>
 </template>
 <script>
-import pdf from 'vue-pdf'
-
+import VuePdf from 'vue-pdf'
 export default {
-	components: {
-		pdf: pdf
-	},
+
 	data () {
 		return {
 			show: true,
@@ -242,14 +239,15 @@ export default {
 		}
 	},
 	methods: {
-		password: function(updatePassword, reason) {
-
+		password (updatePassword, reason) {
 			updatePassword(prompt('password is "test"'));
 		},
-		error: function(err) {
-
+		error (err) {
 			console.log(err);
 		}
+	},
+	components: {
+		VuePdf
 	}
 }
 </script>
