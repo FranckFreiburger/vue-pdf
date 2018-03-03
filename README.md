@@ -103,7 +103,7 @@ export default {
 
 <script>
 import VuePdf from 'vue-pdf'
-var loadingTask = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf');
+var loadingTask = VuePdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf');
 export default {
   data() {
     return {
