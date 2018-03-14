@@ -42,7 +42,7 @@ since v2.x, the script is exported as esm.
 ### Events
 |Name|Attributes|Listen to|Description|
 |---|---|------|----------|
-|Password | (updatePassword, reason) | @password | The url of the pdf file.<br/> `updatePassword`: The function to call with the pdf password. <br/> `reason`: the reason why this function is called `'NEED_PASSWORD'` or `'INCORRECT_PASSWORD'`
+|Password | (updatePassword, reason) | @password | The url of the pdf file.<br/> `updatePassword` <br/> The function to call with the pdf password. <br/> `reason`<br/> the reason why this function is called <br/> `'NEED_PASSWORD'` or `'INCORRECT_PASSWORD'`
 |Progress|Number|@progress|Document loading progress. Range [0, 1].|
 |Loaded|Null|@loaded|Triggered when the document is loaded.|
 |Page Loaded|Number|@page-loaded|Triggered when a page is loaded.|
@@ -69,7 +69,8 @@ since v2.x, the script is exported as esm.
     <VuePdf
       src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"
       @num-pages="pageCount = $event"
-      @page-loaded="currentPage = $event" />
+      @page-loaded="currentPage = $event"
+    />
   </div>
 </template>
 
@@ -97,7 +98,8 @@ export default {
       :key="i"
       :src="src"
       :page="i"
-      style="display: inline-block; width: 25%" />
+      style="display: inline-block; width: 25%"
+    />
   </div>
 </template>
 
@@ -140,10 +142,11 @@ export default {
     <button 
       @click="$refs.myPdfComponent.print(100, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])">
         print
-      </button>
+    </button>
     <VuePdf
       ref="myPdfComponent" 
-      src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf" />
+      src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"
+    />
   </div>
 </template>
 ```
@@ -156,13 +159,17 @@ export default {
     <button @click="logContent">log content</button>
     <VuePdf
       ref="myPdfComponent"
-      src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf" />
+      src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"
+    />
   </div>
 </template>
 
 <script>
 import VuePdf from 'vue-pdf'
 export default {
+  components: {
+    VuePdf
+  },
   methods: {
     logContent() {
       this.$refs.myPdfComponent.pdf.forEachPage(function(page) {
@@ -173,9 +180,6 @@ export default {
         })
       });
     }
-  },
-  components: {
-    VuePdf
   }
 }
 
@@ -202,22 +206,26 @@ export default {
         :style="{ width: loadedRatio * 100 + '%' }">
           {{ Math.floor(loadedRatio * 100) }}%
        </div>
-       <VuePdf
-        v-if="show" 
-        ref="pdf" 
-        style="border: 1px solid red" 
-        :src="src" :page="page" 
-        :rotate="rotate" 
-        @password="password" 
-        @progress="loadedRatio = $event" 
-        @error="error" 
-        @num-pages="numPages = $event" />
+       <VuePdf 
+         v-if="show" 
+         ref="pdf" 
+         style="border: 1px solid red" 
+         :src="src" :page="page" 
+         :rotate="rotate" 
+         @password="password" 
+         @progress="loadedRatio = $event" 
+         @error="error" 
+         @num-pages="numPages = $event" 
+        />
     </div>
   </div>
 </template>
 <script>
 import VuePdf from 'vue-pdf'
 export default {
+  components: {
+    VuePdf
+  },
   data () {
     return {
       show: true,
@@ -244,9 +252,6 @@ export default {
     error (err) {
       console.log(err);
     }
-  },
-  components: {
-    VuePdf
   }
 }
 </script>
