@@ -9,7 +9,7 @@ npm install --save vue-pdf
 ## Example - basic
 ```js
 <template>
-  <vue-pdf src="./static/relativity.pdf" />
+  <VuePdf src="./static/relativity.pdf" />
 </template>
 
 <script>
@@ -66,7 +66,7 @@ since v2.x, the script is exported as esm.
 <template>
   <div>
     {{currentPage}} / {{pageCount}}
-    <vue-pdf
+    <VuePdf
       src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"
       @num-pages="pageCount = $event"
       @page-loaded="currentPage = $event" />
@@ -92,7 +92,7 @@ export default {
 ```js
 <template>
   <div>
-    <vue-pdf
+    <VuePdf
       v-for="i in numPages"
       :key="i"
       :src="src"
@@ -128,7 +128,7 @@ export default {
 <template>
   <div>
     <button @click="$refs.myPdfComponent.print()">print</button>
-    <vue-pdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf" />
+    <VuePdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf" />
   </div>
 </template>
 ```
@@ -141,7 +141,7 @@ export default {
       @click="$refs.myPdfComponent.print(100, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])">
         print
       </button>
-    <vue-pdf 
+    <VuePdf
       ref="myPdfComponent" 
       src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf" />
   </div>
@@ -154,7 +154,7 @@ export default {
 <template>
   <div>
     <button @click="logContent">log content</button>
-    <vue-pdf
+    <VuePdf
       ref="myPdfComponent"
       src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf" />
   </div>
@@ -202,7 +202,7 @@ export default {
         :style="{ width: loadedRatio * 100 + '%' }">
           {{ Math.floor(loadedRatio * 100) }}%
        </div>
-       <vue-pdf 
+       <VuePdf
         v-if="show" 
         ref="pdf" 
         style="border: 1px solid red" 
