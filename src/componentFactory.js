@@ -16,13 +16,7 @@ export default function(pdfjsWrapper) {
 				h('div', {
 					ref: 'canvasParent'
 				}, [
-					h('canvas', {
-						style: {
-							display: 'block',
-							width: '100%',
-						},
-						ref:'canvas'
-					})
+
 				]),
 				h('div', {
 					class: 'annotationLayer',
@@ -94,7 +88,7 @@ export default function(pdfjsWrapper) {
 		// doc: mounted hook is not called during server-side rendering.
 		mounted: function() {
 
-			this.pdf = new PDFJSWrapper(this.$refs.canvasParent, this.$refs.canvas, this.$refs.annotationLayer, this.$emit.bind(this));
+			this.pdf = new PDFJSWrapper(this.$refs.canvasParent, this.$refs.annotationLayer, this.$emit.bind(this));
 			
 			this.$on('loaded', function() {
 				
