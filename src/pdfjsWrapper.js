@@ -48,7 +48,7 @@ export default function(PDFJS) {
 	}
 
 
-	function PDFJSWrapper(canvasElt, annotationLayerElt, emitEvent) {
+	function PDFJSWrapper(canvasParent, canvasElt, annotationLayerElt, emitEvent) {
 		
 		var pdfDoc = null;
 		var pdfPage = null;
@@ -72,6 +72,14 @@ export default function(PDFJS) {
 				return;
 			pdfDoc.destroy();
 			pdfDoc = null;
+		}
+
+		this.setCanvasHeight = function(h) {
+			canvasElt.style.height = h
+		}
+
+		this.getCanvas = function() {
+			return canvasElt;
 		}
 		
 		this.getResolutionScale = function() {
@@ -186,7 +194,9 @@ export default function(PDFJS) {
 		}
 		
 		this.renderPage = function(rotate) {
-			
+			const oldCanvas = canvasElt;
+			canvasElt = canvasElt.cloneNode();
+			canvasParent.replaceChild(canvasElt, oldCanvas)
 			if ( pdfRender !== null ) {
 
 				if ( canceling )
@@ -206,6 +216,8 @@ export default function(PDFJS) {
 
 			if ( rotate === undefined )
 				rotate = 0;
+
+			
 
 			var scale = canvasElt.offsetWidth / pdfPage.getViewport(1).width * (window.devicePixelRatio || 1);
 			var viewport = pdfPage.getViewport(scale, rotate);
@@ -238,7 +250,6 @@ export default function(PDFJS) {
 
 			pdfRender
 			.then(function() {
-				
 				annotationLayerElt.style.visibility = '';
 				canceling = false;
 				pdfRender = null;
