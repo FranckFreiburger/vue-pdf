@@ -100,6 +100,10 @@ export default function(pdfjsWrapper) {
 				
 				this.$refs.canvas.style.height = this.$refs.canvas.offsetWidth * (height / width) + 'px';
 			});
+
+			this.$on('link-clicked', function(pageNumber) {
+				this.$emit('link-clicked', pageNumber)
+			});
 			
 			this.pdf.loadDocument(this.src);
 		},
