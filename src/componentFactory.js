@@ -13,13 +13,11 @@ export default function(pdfjsWrapper) {
 					style: 'position: relative'
 				}
 			}, [
-				h('canvas', {
-					style: {
-						display: 'block',
-						width: '100%',
-					},
-					ref:'canvas'
-				}),
+				h('div', {
+					ref: 'canvasParent'
+				}, [
+
+				]),
 				h('div', {
 					class: 'annotationLayer',
 					ref:'annotationLayer'
@@ -58,7 +56,6 @@ export default function(pdfjsWrapper) {
 				this.pdf.loadPage(this.page, this.rotate);
 			},
 			rotate: function() {
-				
 				this.pdf.renderPage(this.rotate);
 			},
 		},
@@ -70,13 +67,15 @@ export default function(pdfjsWrapper) {
 					return;
 
 				// on IE10- canvas height must be set
-				this.$refs.canvas.style.height = this.$refs.canvas.offsetWidth * (this.$refs.canvas.height / this.$refs.canvas.width) + 'px';
-
+				this.pdf.setCanvasHeight(this.pdf.getCanvas().offsetWidth * (this.pdf.getCanvas().height / this.pdf.getCanvas().width) + 'px');
 				// update the page when the resolution is too poor
 				var resolutionScale = this.pdf.getResolutionScale();
 				
 				if ( resolutionScale < 0.85 || resolutionScale > 1.15 )
+				{
 					this.pdf.renderPage(this.rotate);
+				}
+					
 
 				this.$refs.annotationLayer.style.transform = 'scale('+resolutionScale+')';
 			},
@@ -89,7 +88,7 @@ export default function(pdfjsWrapper) {
 		// doc: mounted hook is not called during server-side rendering.
 		mounted: function() {
 
-			this.pdf = new PDFJSWrapper(this.$refs.canvas, this.$refs.annotationLayer, this.$emit.bind(this));
+			this.pdf = new PDFJSWrapper(this.$refs.canvasParent, this.$refs.annotationLayer, this.$emit.bind(this));
 			
 			this.$on('loaded', function() {
 				
@@ -97,8 +96,7 @@ export default function(pdfjsWrapper) {
 			});
 			
 			this.$on('page-size', function(width, height) {
-				
-				this.$refs.canvas.style.height = this.$refs.canvas.offsetWidth * (height / width) + 'px';
+				this.pdf.setCanvasHeight(this.pdf.getCanvas().offsetWidth  * (height / width) + 'px');
 			});
 			
 			this.pdf.loadDocument(this.src);
