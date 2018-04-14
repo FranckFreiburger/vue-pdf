@@ -1,3 +1,5 @@
+
+
 # vue-pdf
 vue.js pdf viewer
 
@@ -219,8 +221,6 @@ export default {
 
 </script>
 ```
-
-
 ##### Example - complete
 ```
 <template>
@@ -278,6 +278,107 @@ export default {
 }
 </script>
 ```
+
+##### Example - consume pdf from secured REST endpoint with next, previous, print and current page of total pages navigations
+ ```
+ <template>
+  <div class="pdfviewer-container">
+    <div id="menuBarDiv">
+      <button @click="previousPage">Prev</button>
+      <p style="font-weight:bold;font-size:14px;display:inline;">{{page}} of {{numPages}} </p>
+      <button @click="nextPage">Next</button>
+      <button @click="$refs.pdf.print()">Print</button>
+    </div>
+    <div id="pdfContainerDiv">
+      <div style="width: 100%;">
+	     <pdf :src="pdfContent"
+          :page="page"
+	      @page-loaded="currentPage = $event"
+          @error="error"
+          @num-pages="numPages = $event"
+          ref="pdf">
+        </pdf>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import pdf from 'vue-pdf'
+import axios from 'axios'  //library to make ajax request below
+
+export default {
+  data() {
+    return {
+      pdfContent: null,
+      numPages: 0,
+      page:1,
+      loadedRatio: 1
+    }
+  },
+  components: {
+    pdf: pdf
+  },
+  mounted() {
+    var self = this;
+
+	 /*
+	  * Make use of axios to make ajax request to a secured REST endpoint that returns
+	  * PDF as octet stream.
+	  */
+    const authHeader = "Bearer yourAccessTokenGoesHere";
+
+    axios({
+      url: 'http://localhost:8080/sample/pdf',
+      method: 'GET',
+      responseType: 'blob',
+      headers: {
+        'Authorization': authHeader,
+      },
+    }).then((response) => {
+      var blob = new Blob([response.data], {type: 'application/pdf'});
+      var blobURL = window.URL.createObjectURL(blob);
+      self.pdfContent = blobURL;
+    });
+  },
+  methods: {
+    nextPage: function() {
+      //Go to next page if any
+      if(this.page < this.numPages)
+        this.page++;
+    },
+    previousPage: function() {
+      //Go to previous page if not already at page 1
+      if(this.page > 1)
+        this.page--;
+    },
+    error: function(err) {
+			console.log(err);
+		}
+  }
+}
+</script>
+
+<style>
+  body {
+    background-color: #808080;
+    margin: 0;
+    padding: 0;
+  }
+  #pdfviewer-container {
+    overflow: auto;
+    position: absolute;
+    width: 100%;
+    height: 150%;
+  }
+  #menuBarDiv {
+    margin-bottom: 1%;
+  }
+  #pdfContainerDiv {
+    margin: 2%;
+  }
+</style>
+ ```
 
 ## Credits
 [<img src="https://www.franck-freiburger.com/FF.png" width="16"> Franck Freiburger](https://www.franck-freiburger.com)
