@@ -282,14 +282,14 @@ export default {
 ##### Example - consume pdf from secured REST endpoint with next, previous, print and current page of total pages navigations
  ```
  <template>
-  <div class="pdfviewer-container">
-    <div id="menuBarDiv">
+  <div>
+    <div>
       <button @click="previousPage">Prev</button>
       <p style="font-weight:bold;font-size:14px;display:inline;">{{page}} of {{numPages}} </p>
       <button @click="nextPage">Next</button>
       <button @click="$refs.pdf.print()">Print</button>
     </div>
-    <div id="pdfContainerDiv">
+    <div>
       <div style="width: 100%;">
 	     <pdf :src="pdfContent"
           :page="page"
@@ -322,10 +322,7 @@ export default {
   mounted() {
     var self = this;
 
-	 /*
-	  * Make use of axios to make ajax request to a secured REST endpoint that returns
-	  * PDF as octet stream.
-	  */
+    //Use axios library to make ajax call to REST endpoint that returns pdf as octet stream
     const authHeader = "Bearer yourAccessTokenGoesHere";
 
     axios({
@@ -358,26 +355,6 @@ export default {
   }
 }
 </script>
-
-<style>
-  body {
-    background-color: #808080;
-    margin: 0;
-    padding: 0;
-  }
-  #pdfviewer-container {
-    overflow: auto;
-    position: absolute;
-    width: 100%;
-    height: 150%;
-  }
-  #menuBarDiv {
-    margin-bottom: 1%;
-  }
-  #pdfContainerDiv {
-    margin: 2%;
-  }
-</style>
  ```
 
 ## Credits
