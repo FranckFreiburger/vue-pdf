@@ -1,5 +1,5 @@
 import { CMapCompressionType } from 'pdfjs-dist/lib/shared/util';
-import LinkService from './LinkService';
+import { PDFLinkService } from 'pdfjs-dist/lib/web/pdf_link_service';
 
 export default function(PDFJS) {
 
@@ -230,7 +230,7 @@ export default function(PDFJS) {
 				},
 			};
 			
-			let linkService = new LinkService();
+			let linkService = new PDFLinkService();
 			linkService.setDocument(pdfDoc);
 			linkService.setViewer(viewer);
 
