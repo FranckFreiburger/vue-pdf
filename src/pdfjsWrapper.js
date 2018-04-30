@@ -244,12 +244,12 @@ export default function(PDFJS) {
 			clearAnnotations();
 
 			var viewer = {
-				scrollPageIntoView: ({ pageNumber }) => {
-					emitEvent('link-clicked', pageNumber)
+				scrollPageIntoView: function(params) {
+					emitEvent('link-clicked', params.pageNumber)
 				},
 			};
 			
-			let linkService = new PDFLinkService();
+			var linkService = new PDFLinkService();
 			linkService.setDocument(pdfDoc);
 			linkService.setViewer(viewer);
 
