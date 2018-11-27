@@ -247,7 +247,7 @@ export default function(PDFJS) {
 
 		this.forEachPage = function(pageCallback) {
 
-			var numPages = pdfDoc.pdfInfo.numPages;
+			var numPages = pdfDoc.numPages;
 
 			(function next(pageNum) {
 
