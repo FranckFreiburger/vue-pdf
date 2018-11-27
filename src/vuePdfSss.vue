@@ -16,5 +16,5 @@
 	component.PDFJS = PDFJS;
 
 	export default component;
-	
+
 </script>
