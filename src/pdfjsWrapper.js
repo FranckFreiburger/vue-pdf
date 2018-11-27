@@ -1,4 +1,3 @@
-import { CMapCompressionType } from 'pdfjs-dist/lib/shared/util';
 import { PDFLinkService } from 'pdfjs-dist/lib/web/pdf_link_service';
 
 export default function(PDFJS) {
@@ -19,23 +18,6 @@ export default function(PDFJS) {
 		else
 			throw new TypeError('invalid src type');
 
-		// see https://github.com/mozilla/pdf.js/blob/628e70fbb5dea3b9066aa5c34cca70aaafef8db2/src/display/dom_utils.js#L64
-		source.CMapReaderFactory = function() {
-
-			this.fetch = function(query) {
-
-				return import('raw-loader!pdfjs-dist/cmaps/'+query.name+'.bcmap' /* webpackChunkName: "noprefetch-[request]" */)
-				.then(function(bcmap) {
-
-					return {
-						cMapData: bcmap,
-						compressionType: CMapCompressionType.BINARY,
-					};
-				});
-			}
-		};
-		
-
 		var loadingTask = PDFJS.getDocument(source);
 		loadingTask.__PDFDocumentLoadingTask = true; // since PDFDocumentLoadingTask is not public
 		
@@ -49,16 +31,14 @@ export default function(PDFJS) {
 	}
 
 
-	function PDFJSWrapper(canvasParent, annotationLayerElt, emitEvent) {
+	function PDFJSWrapper(canvasElt, annotationLayerElt, emitEvent) {
 		
 		var pdfDoc = null;
 		var pdfPage = null;
 		var pdfRender = null;
 		var canceling = false;
-		var canvasElt = document.createElement('canvas');
-		canvasElt.style.display = 'block';
-		canvasElt.style.width = '100%';
-		canvasParent.appendChild(canvasElt);
+
+		canvasElt.getContext('2d').save();
 
 		function clearCanvas() {
 			
@@ -79,16 +59,8 @@ export default function(PDFJS) {
 			pdfDoc = null;
 		}
 
-		this.setCanvasHeight = function(h) {
-			canvasElt.style.height = h
-		}
-
-		this.getCanvas = function() {
-			return canvasElt;
-		}
-		
 		this.getResolutionScale = function() {
-			
+
 			return canvasElt.offsetWidth / canvasElt.width;
 		}
 
@@ -204,12 +176,7 @@ export default function(PDFJS) {
 				if ( canceling )
 					return;
 				canceling = true;
-
-				setTimeout(function() {
-
-					if ( canceling )
-						pdfRender.cancel();
-				})
+				pdfRender.cancel();
 				return;
 			}
 
@@ -218,14 +185,6 @@ export default function(PDFJS) {
 
 			if ( rotate === undefined )
 				rotate = 0;
-
-			canvasElt = canvasElt.cloneNode(true);
-			const previousCanvas = canvasParent.firstChild;
-			if (previousCanvas) {
-				canvasParent.replaceChild(canvasElt, previousCanvas);
-			} else {
-				canvasParent.appendChild(canvasElt);
-			}
 
 			var scale = canvasElt.offsetWidth / pdfPage.getViewport(1).width * (window.devicePixelRatio || 1);
 			var viewport = pdfPage.getViewport(scale, rotate);
