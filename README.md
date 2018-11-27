@@ -82,6 +82,8 @@ Triggered when an internal link is clicked
   * `src`: see `:src` prop  
   This function creates a PDFJS loading task that can be used and reused as `:src` property.  
   The loading task is a promise that resolves with the PDFJS pdf document that exposes the `numPages` property (see example below).
+  
+  **beware:** when the component is destroyed, the object returned by `createLoadingTask()` become invalid. 
 
 
 ## Examples
