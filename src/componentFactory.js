@@ -45,7 +45,6 @@ export default function(pdfjsWrapper) {
 			},
 			rotate: {
 				type: Number,
-				default: 0,
 			},
 		},
 		watch: {
