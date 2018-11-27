@@ -217,7 +217,7 @@ export default function(PDFJS) {
 				return;
 
 			if ( rotate === undefined )
-				rotate = 0;
+				rotate = pdfPage.pageInfo.rotate;
 
 			canvasElt = canvasElt.cloneNode(true);
 			const previousCanvas = canvasParent.firstChild;
