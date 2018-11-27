@@ -301,6 +301,12 @@ export default function(PDFJS) {
 
 			if ( isPDFDocumentLoadingTask(src) ) {
 
+				if ( src.destroyed ) {
+
+					emitEvent('error', new Error('loadingTask has been destroyed'));
+					return
+				}
+
 				var loadingTask = src;
 			} else {
 
