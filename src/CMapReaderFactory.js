@@ -6,11 +6,11 @@ export default function() {
 
 	this.fetch = function(query) {
 
-		return import('raw-loader!pdfjs-dist/cmaps/'+query.name+'.bcmap' /* webpackChunkName: "noprefetch-[request]" */)
+		return import('./buffer-loader!pdfjs-dist/cmaps/'+query.name+'.bcmap' /* webpackChunkName: "noprefetch-[request]" */)
 		.then(function(bcmap) {
 
 			return {
-				cMapData: bcmap,
+				cMapData: bcmap.default,
 				compressionType: CMapCompressionType.BINARY,
 			};
 		});
