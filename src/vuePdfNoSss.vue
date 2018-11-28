@@ -8,7 +8,7 @@
 		var pdfjsWrapper = require('./pdfjsWrapper.js').default;
 		var PDFJS = require('pdfjs-dist/build/pdf.js');
 
-		if ( typeof window !== 'undefined' && 'Worker' in window ) {
+		if ( typeof window !== 'undefined' && 'Worker' in window && navigator.appVersion.indexOf('MSIE 10') === -1 ) {
 
 			var PdfjsWorker = require('worker-loader!pdfjs-dist/build/pdf.worker.js');
 			PDFJS.GlobalWorkerOptions.workerPort = new PdfjsWorker();
