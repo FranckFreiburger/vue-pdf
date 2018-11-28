@@ -3,14 +3,21 @@
 
 	import componentFactory from './componentFactory.js'
 
-	if ( process.env.VUE_ENV === 'server' ) {
-
-		var component = componentFactory({});
-	} else {
+	if ( process.env.VUE_ENV !== 'server' ) {
 
 		var pdfjsWrapper = require('./pdfjsWrapper.js').default;
-		var PDFJS = require('pdfjs-dist/webpack.js');
+		var PDFJS = require('pdfjs-dist/build/pdf.js');
+
+		if ( typeof window !== 'undefined' && 'Worker' in window ) {
+
+			var PdfjsWorker = require('worker-loader!pdfjs-dist/build/pdf.worker.js');
+			PDFJS.GlobalWorkerOptions.workerPort = new PdfjsWorker();
+		}
+
 		var component = componentFactory(pdfjsWrapper(PDFJS));
+	} else {
+
+		var component = componentFactory({});
 	}
 
 	export default component;
