@@ -212,7 +212,7 @@ export default function(PDFJS) {
 			linkService.setDocument(pdfDoc);
 			linkService.setViewer(viewer);
 
-			pdfPage.getAnnotations()
+			pdfPage.getAnnotations({ intent: 'display' })
 			.then(function(annotations) {
 
 				PDFJS.AnnotationLayer.render({
