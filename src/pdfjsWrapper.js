@@ -159,11 +159,7 @@ export default function(PDFJS) {
 				.then(function() {
 
 					win.focus(); // Required for IE
-					if (win.document.queryCommandSupported('print')) {
-						win.document.execCommand('print', false, null);
-						} else {
-						win.print();
-					  }
+					win.print();
 					removeIframe();
 				})
 				.catch(function(err) {
