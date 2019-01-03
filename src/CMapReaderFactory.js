@@ -10,7 +10,7 @@ export default function() {
 		.then(function(bcmap) {
 
 			return {
-				cMapData: bcmap.default,
+				cMapData: bcmap,
 				compressionType: CMapCompressionType.BINARY,
 			};
 		});
