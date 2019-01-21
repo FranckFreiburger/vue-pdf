@@ -12,7 +12,7 @@ export default function(PDFJS) {
 		var source;
 		if ( typeof(src) === 'string' )
 			source = { url: src };
-			else if ( src instanceof Uint8Array )
+		else if ( src instanceof Uint8Array )
 			source = { data: src };
 		else if ( typeof(src) === 'object' && src !== null )
 			source = Object.assign({}, src);
