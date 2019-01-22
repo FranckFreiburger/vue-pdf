@@ -10,7 +10,7 @@ module.exports = function(content) {
 	else
 		data = Buffer.from(content);
 
-	return 'module.exports = Buffer.from("'+data.toString('base64')+'", "base64")';
+	return 'export default Buffer.from("'+data.toString('base64')+'", "base64")';
 }
 
 module.exports.raw = true;
