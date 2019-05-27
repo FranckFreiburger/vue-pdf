@@ -77,10 +77,14 @@ export default function(PDFJS) {
 			var CSS_UNITS = 96.0 / 72.0;
 
 			var iframeElt = document.createElement('iframe');
+			var tempElt = document.createElement('div');
+			tempElt.style.cssText = 'display: none';
+            window.document.body.appendChild(tempElt);
 
 			function removeIframe() {
 
 				iframeElt.parentNode.removeChild(iframeElt);
+				tempElt.parentNode.removeChild(tempElt);
 			}
 
 			new Promise(function(resolve, reject) {
@@ -138,7 +142,7 @@ export default function(PDFJS) {
 
 							var viewport = page.getViewport(1);
 
-							var printCanvasElt = win.document.body.appendChild(win.document.createElement('canvas'));
+							var printCanvasElt = tempElt.appendChild(document.createElement('canvas'));
 							printCanvasElt.width = (viewport.width * PRINT_UNITS);
 							printCanvasElt.height = (viewport.height * PRINT_UNITS);
 
@@ -157,6 +161,15 @@ export default function(PDFJS) {
 
 				Promise.all(allPages)
 				.then(function() {
+                    for (var i = 0; i < tempElt.children.length; ++i) {
+                        var child = tempElt.children[i];
+                        var canvas = child.cloneNode(true);
+
+                        var ctx = canvas.getContext('2d');
+                        ctx.drawImage(child, 0, 0);
+
+                        win.document.body.appendChild(canvas);
+                    }
 
 					win.focus(); // Required for IE
 					if (win.document.queryCommandSupported('print')) {
