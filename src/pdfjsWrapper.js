@@ -188,7 +188,7 @@ export default function(PDFJS) {
 			if ( pdfPage === null )
 				return;
 
-			rotate = (typeof pdfPage.rotate === 'undefined'? 0 : pdfPage.rotate) + (typeof rotate === 'undefined'? 0 : rotate);
+			rotate = (pdfPage.rotate === undefined ? 0 : pdfPage.rotate) + (rotate === undefined ? 0 : rotate);
 
 			var scale = canvasElt.offsetWidth / pdfPage.getViewport(1).width * (window.devicePixelRatio || 1);
 			var viewport = pdfPage.getViewport(scale, rotate);
