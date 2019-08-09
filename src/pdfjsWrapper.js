@@ -1,5 +1,7 @@
 import { PDFLinkService } from 'pdfjs-dist/lib/web/pdf_link_service';
 
+var pendingOperation = Promise.resolve();
+
 export default function(PDFJS) {
 
 	function isPDFDocumentLoadingTask(obj) {
@@ -18,6 +20,10 @@ export default function(PDFJS) {
 			source = Object.assign({}, src);
 		else
 			throw new TypeError('invalid src type');
+
+		// source.verbosity = PDFJS.VerbosityLevel.INFOS;
+		// source.pdfBug = true;
+		// source.stopAtErrors = true;
 
 		var loadingTask = PDFJS.getDocument(source);
 		loadingTask.__PDFDocumentLoadingTask = true; // since PDFDocumentLoadingTask is not public
@@ -56,7 +62,9 @@ export default function(PDFJS) {
 
 			if ( pdfDoc === null )
 				return;
-			pdfDoc.destroy();
+
+			// Aborts all network requests and destroys worker.
+			pendingOperation = pdfDoc.destroy();
 			pdfDoc = null;
 		}
 
@@ -105,7 +113,7 @@ export default function(PDFJS) {
 				return pdfDoc.getPage(1)
 				.then(function(page) {
 
-					var viewport = page.getViewport(1);
+					var viewport = page.getViewport({ scale: 1 });
 					win.document.head.appendChild(win.document.createElement('style')).textContent =
 						'@supports ((size:A4) and (size:1pt 1pt)) {' +
 							'@page { margin: 1pt; size: ' + ((viewport.width * PRINT_UNITS) / CSS_UNITS) + 'pt ' + ((viewport.height * PRINT_UNITS) / CSS_UNITS) + 'pt; }' +
@@ -137,7 +145,7 @@ export default function(PDFJS) {
 						pdfDoc.getPage(pageNumber)
 						.then(function(page) {
 
-							var viewport = page.getViewport(1);
+							var viewport = page.getViewport({ scale: 1 });
 
 							var printCanvasElt = win.document.body.appendChild(win.document.createElement('canvas'));
 							printCanvasElt.width = (viewport.width * PRINT_UNITS);
@@ -190,8 +198,8 @@ export default function(PDFJS) {
 
 			rotate = (pdfPage.rotate === undefined ? 0 : pdfPage.rotate) + (rotate === undefined ? 0 : rotate);
 
-			var scale = canvasElt.offsetWidth / pdfPage.getViewport(1).width * (window.devicePixelRatio || 1);
-			var viewport = pdfPage.getViewport(scale, rotate);
+			var scale = canvasElt.offsetWidth / pdfPage.getViewport({ scale: 1 }).width * (window.devicePixelRatio || 1);
+			var viewport = pdfPage.getViewport({ scale, rotation:rotate });
 
 			emitEvent('page-size', viewport.width, viewport.height);
 
@@ -216,36 +224,44 @@ export default function(PDFJS) {
 			linkService.setDocument(pdfDoc);
 			linkService.setViewer(viewer);
 
-			pdfPage.getAnnotations({ intent: 'display' })
-			.then(function(annotations) {
+			pendingOperation = pendingOperation.then(function() {
 
-				PDFJS.AnnotationLayer.render({
-					viewport: viewport.clone({ dontFlip: true }),
-					div: annotationLayerElt,
-					annotations: annotations,
-					page: pdfPage,
-					linkService: linkService,
-					renderInteractiveForms: false
+				var getAnnotationsOperation =
+				pdfPage.getAnnotations({ intent: 'display' })
+				.then(function(annotations) {
+
+					PDFJS.AnnotationLayer.render({
+						viewport: viewport.clone({ dontFlip: true }),
+						div: annotationLayerElt,
+						annotations: annotations,
+						page: pdfPage,
+						linkService: linkService,
+						renderInteractiveForms: false
+					});
 				});
-			});
 
-			pdfRender
-			.then(function() {
-				annotationLayerElt.style.visibility = '';
-				canceling = false;
-				pdfRender = null;
-			})
-			.catch(function(err) {
+				var pdfRenderOperation =
+				pdfRender.promise
+				.then(function() {
 
-				pdfRender = null;
-				if ( err instanceof PDFJS.RenderingCancelledException ) {
-
+					annotationLayerElt.style.visibility = '';
 					canceling = false;
-					this.renderPage(rotate);
-					return;
-				}
-				emitEvent('error', err);
-			}.bind(this))
+					pdfRender = null;
+				})
+				.catch(function(err) {
+
+					pdfRender = null;
+					if ( err instanceof PDFJS.RenderingCancelledException ) {
+
+						canceling = false;
+						this.renderPage(rotate);
+						return;
+					}
+					emitEvent('error', err);
+				}.bind(this))
+
+				return Promise.all([getAnnotationsOperation, pdfRenderOperation]);
+			}.bind(this));
 		}
 
 
@@ -273,7 +289,10 @@ export default function(PDFJS) {
 			if ( pdfDoc === null )
 				return;
 
-			pdfDoc.getPage(pageNumber)
+			pendingOperation = pendingOperation.then(function() {
+
+				return pdfDoc.getPage(pageNumber);
+			})
 			.then(function(page) {
 
 				pdfPage = page;
@@ -303,40 +322,45 @@ export default function(PDFJS) {
 				return;
 			}
 
-			if ( isPDFDocumentLoadingTask(src) ) {
+			// wait for pending operation ends
+			pendingOperation = pendingOperation.then(function() {
 
-				if ( src.destroyed ) {
+				var loadingTask;
+				if ( isPDFDocumentLoadingTask(src) ) {
 
-					emitEvent('error', new Error('loadingTask has been destroyed'));
-					return
+					if ( src.destroyed ) {
+
+						emitEvent('error', new Error('loadingTask has been destroyed'));
+						return
+					}
+
+					loadingTask = src;
+				} else {
+
+					loadingTask = createLoadingTask(src, {
+						onPassword: function(updatePassword, reason) {
+
+							var reasonStr;
+							switch (reason) {
+								case PDFJS.PasswordResponses.NEED_PASSWORD:
+									reasonStr = 'NEED_PASSWORD';
+									break;
+								case PDFJS.PasswordResponses.INCORRECT_PASSWORD:
+									reasonStr = 'INCORRECT_PASSWORD';
+									break;
+							}
+							emitEvent('password', updatePassword, reasonStr);
+						},
+						onProgress: function(status) {
+
+							var ratio = status.loaded / status.total;
+							emitEvent('progress', Math.min(ratio, 1));
+						}
+					});
 				}
 
-				var loadingTask = src;
-			} else {
-
-				var loadingTask = createLoadingTask(src, {
-					onPassword: function(updatePassword, reason) {
-
-						var reasonStr;
-						switch (reason) {
-							case PDFJS.PasswordResponses.NEED_PASSWORD:
-								reasonStr = 'NEED_PASSWORD';
-								break;
-							case PDFJS.PasswordResponses.INCORRECT_PASSWORD:
-								reasonStr = 'INCORRECT_PASSWORD';
-								break;
-						}
-						emitEvent('password', updatePassword, reasonStr);
-					},
-					onProgress: function(status) {
-
-						var ratio = status.loaded / status.total;
-						emitEvent('progress', Math.min(ratio, 1));
-					}
-				});
-			}
-
-			loadingTask
+				return loadingTask.promise;
+			})
 			.then(function(pdf) {
 
 				pdfDoc = pdf;

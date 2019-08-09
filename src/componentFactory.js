@@ -10,17 +10,17 @@ export default function(pdfjsWrapper) {
 		render: function(h) {
 			return h('span', {
 				attrs: {
-					style: 'position: relative; display: inline-block'
+					style: 'position: relative; display: block'
 				}
 			}, [
 				h('canvas', {
 					attrs: {
-						style: 'display: inline-block; width: 100%; vertical-align: top',
+						style: 'display: inline-block; width: 100%; height: 100%; vertical-align: top',
 					},
 					ref:'canvas'
 				}),
 				h('span', {
-					style: 'display: inline-block; width: 100%',
+					style: 'display: inline-block; width: 100%; height: 100%',
 					class: 'annotationLayer',
 					ref:'annotationLayer'
 				}),
@@ -75,7 +75,7 @@ export default function(pdfjsWrapper) {
 				if ( resolutionScale < 0.85 || resolutionScale > 1.15 )
 					this.pdf.renderPage(this.rotate);
 
-				this.$refs.annotationLayer.style.transform = 'scale('+resolutionScale+')';
+				// this.$refs.annotationLayer.style.transform = 'scale('+resolutionScale+')';
 			},
 			print: function(dpi, pageList) {
 
