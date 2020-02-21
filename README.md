@@ -2,12 +2,12 @@
 vue.js pdf viewer
 
 ## Install
-```
+```bash
 npm install --save vue-pdf
 ```
 
 ## Example - basic
-```
+```vue
 <template>
   <pdf src="./static/relativity.pdf"></pdf>
 </template>
@@ -91,7 +91,7 @@ Triggered when an internal link is clicked
 ## Examples
 
 ##### Example - current page / page count
-```
+```vue
 <template>
 	<div>
 		{{currentPage}} / {{pageCount}}
@@ -124,7 +124,7 @@ export default {
 
 
 ##### Example - display multiple pages of the same pdf document
-```
+```vue
 <template>
 	<div>
 		<pdf
@@ -167,7 +167,7 @@ export default {
 
 
 ##### Example - print all pages
-```
+```vue
 <template>
 	<button @click="$refs.myPdfComponent.print()">print</button>
 	<pdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"></pdf>
@@ -176,7 +176,7 @@ export default {
 
 
 ##### Example - print multiple pages
-```
+```vue
 <template>
 	<button @click="$refs.myPdfComponent.print(100, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])">print</button>
 	<pdf ref="myPdfComponent" src="https://cdn.mozilla.net/pdfjs/tracemonkey.pdf"></pdf>
@@ -185,7 +185,7 @@ export default {
 
 
 ##### Example - get text content
-```
+```vue
 <template>
 	<div>
 		<button
@@ -229,7 +229,7 @@ export default {
 
 
 ##### Example - complete
-```
+```vue
 <template>
 	<div>
 		<input type="checkbox" v-model="show">
