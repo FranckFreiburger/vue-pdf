@@ -151,6 +151,12 @@ export default function(PDFJS) {
 							printCanvasElt.width = (viewport.width * PRINT_UNITS);
 							printCanvasElt.height = (viewport.height * PRINT_UNITS);
 
+							var ua = window.navigator.userAgent;
+							if (ua.indexOf('MSIE ') > 0 || ua.indexOf('Trident/') > 0) {
+								printCanvasElt.style.width = "100%";
+								printCanvasElt.style.height = "100%";
+							}
+
 							return page.render({
 								canvasContext: printCanvasElt.getContext('2d'),
 								transform: [ // Additional transform, applied just before viewport transform.
