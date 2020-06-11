@@ -7,6 +7,7 @@ export default function(PDFJS) {
 	function isPDFDocumentLoadingTask(obj) {
 
 		return typeof(obj) === 'object' && obj !== null && obj.__PDFDocumentLoadingTask === true;
+		// or: return obj.constructor.name === 'PDFDocumentLoadingTask';
 	}
 
 	function createLoadingTask(src, options) {
