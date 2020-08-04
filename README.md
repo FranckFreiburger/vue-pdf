@@ -126,43 +126,45 @@ export default {
 ##### Example - display multiple pages of the same pdf document
 ```vue
 <template>
-	<div>
-		<pdf
-			v-for="i in numPages"
-			:key="i"
-			:src="src"
-			:page="i"
-			style="display: inline-block; width: 25%"
-		></pdf>
-	</div>
+  <div>
+    <pdf
+      v-for="i in numPages"
+      :key="i"
+      :src="src"
+      :page="i"
+      style="display: inline-block; width: 25%"
+    ></pdf>
+  </div>
 </template>
 
 <script>
-
-import pdf from 'vue-pdf'
-
-var loadingTask = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf');
+import pdf from 'vue-pdf';
 
 export default {
-	components: {
-		pdf
-	},
-	data() {
-		return {
-			src: loadingTask,
-			numPages: undefined,
-		}
-	},
-	mounted() {
-
-		this.src.promise.then(pdf => {
-
-			this.numPages = pdf.numPages;
-		});
-	}
-}
-
+  components: {
+    pdf,
+  },
+  data() {
+    return {
+      src: this.src,
+      numPages: undefined,
+    };
+  },
+  mounted() {
+    this.initialize();
+  },
+  methods: {
+    initialize() {
+      const loadingTask = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf');
+      loadingTask.promise.then((pdfs) => {
+        this.numPages = pdfs.numPages;
+        this.src = loadingTask;
+      });
+    },
+  },
+};
 </script>
+
 ```
 
 
