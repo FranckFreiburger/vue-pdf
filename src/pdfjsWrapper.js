@@ -26,6 +26,9 @@ export default function(PDFJS) {
 		// source.pdfBug = true;
 		// source.stopAtErrors = true;
 
+		if ( options && options.withCredentials )
+			source.withCredentials = options.withCredentials;
+
 		var loadingTask = PDFJS.getDocument(source);
 		loadingTask.__PDFDocumentLoadingTask = true; // since PDFDocumentLoadingTask is not public
 
