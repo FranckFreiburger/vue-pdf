@@ -80,12 +80,18 @@ Triggered when an internal link is clicked
 
 ### Public static methods
 
-#### createLoadingTask(src)
+#### createLoadingTask(src[, options])
   * `src`: see `:src` prop  
+  * `options`: an object of options. 
   This function creates a PDFJS loading task that can be used and reused as `:src` property.  
   The loading task is a promise that resolves with the PDFJS pdf document that exposes the `numPages` property (see example below).
   
   **beware:** when the component is destroyed, the object returned by `createLoadingTask()` become invalid. 
+  
+  Supported options:
+  * onPassword: Callback that's called when a password protected PDF is being opened.
+  * onProgress: Callback return loading progress.
+  * withCredentials: Wheter or not to send cookies in the fetch request.
 
 
 ## Examples
