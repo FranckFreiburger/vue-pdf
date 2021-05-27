@@ -9,7 +9,7 @@ const PDFJSWorker = require('worker-loader!pdfjs-dist/build/pdf.worker.js');
 if ( typeof process == 'undefined' || process.env.VUE_ENV !== 'server' ) {
   if ( typeof window !== 'undefined' && 'Worker' in window && navigator.appVersion.indexOf('MSIE 10') === -1 ) {
 
-    PDFJS.GlobalWorkerOptions.workerSrc = PDFJSWorker
+    PDFJS.GlobalWorkerOptions.workerSrc = PDFJSWorker.default
   }
 
   var component = componentFactory(pdfjsWrapper(PDFJS));
