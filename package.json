@@ -1,6 +1,6 @@
 {
   "name": "@themainstage/vue-pdf",
-  "version": "4.3.2",
+  "version": "4.3.3",
   "description": "vue.js pdf viewer",
   "main": "src/vuePdfNoSss.vue",
   "scripts": {},
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/FranckFreiburger/vue-pdf#readme",
   "dependencies": {
-    "@themainstage/pdfjs-dist": "^2.8.336-chromefix",
+    "@themainstage/pdfjs-dist": "^2.8.335-chromefix",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "loader-utils": "^1.4.0",
     "vue-resize-sensor": "^2.0.0",
