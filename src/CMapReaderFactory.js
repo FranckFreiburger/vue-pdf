@@ -8,7 +8,8 @@ export default function() {
 
 		return import('./buffer-loader!pdfjs-dist/cmaps/'+query.name+'.bcmap' /* webpackChunkName: "noprefetch-[request]" */)
 		.then(function(bcmap) {
-
+			//加载完语言文件后清除缓存,问题:多次打开pdf时不显示文字.
+			delete require.cache[require.resolve('./buffer-loader!pdfjs-dist-sign/cmaps/'+query.name+'.bcmap')];
 			return {
 				cMapData: bcmap.default,
 				compressionType: CMapCompressionType.BINARY,
