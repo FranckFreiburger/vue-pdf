@@ -1,15 +1,19 @@
 # vue-pdf
-vue.js pdf viewer
+vue.js pdf viewer is a package for Vue that enables you to display and view PDF's easily via vue components.
 
-## Install
+## Install via NPM/Yarn
 ```bash
-npm install --save vue-pdf
+npm install vue-pdf
+```
+
+```bash
+yarn add vue-pdf
 ```
 
 ## Example - basic
 ```vue
 <template>
-  <pdf src="./static/relativity.pdf"></pdf>
+  <pdf src="./path/to/static/relativity.pdf"></pdf>
 </template>
 
 <script>
@@ -39,13 +43,14 @@ since v2.x, the script is exported as esm.
 ### Props
 
 #### :src <sup>String / Object - default: ''<sup>
-The url of the pdf file. `src` may also be a `string|TypedArray|DocumentInitParameters|PDFDataRangeTransport` for more details, see [`PDFJS.getDocument()`](https://github.com/mozilla/pdf.js/blob/8ff1fbe7f819513e7d0023df961e3d223b35aefa/src/display/api.js#L117).
+The url of the given pdf. `src` may also be a `string|TypedArray|DocumentInitParameters|PDFDataRangeTransport` for more details, see [`PDFJS.getDocument()`](https://github.com/mozilla/pdf.js/blob/8ff1fbe7f819513e7d0023df961e3d223b35aefa/src/display/api.js#L117).
 
 #### :page <sup>Number - default: 1<sup>
 The page number to display.
 
 #### :rotate <sup>Number - default: 0<sup>
 The page rotation in degrees, only multiple of 90 are valid.
+EG: 90, 180, 270, 360, ...
 
 ### Events
 
@@ -57,19 +62,19 @@ The page rotation in degrees, only multiple of 90 are valid.
 Document loading progress. Range [0, 1].
 
 #### @loaded
-Triggered when the document is loaded.
+Triggers when the document is loaded.
 
 #### @page-loaded <sup>Number<sup>
-Triggered when a page is loaded.
+Triggers when a page is loaded.
 
 #### @num-pages <sup>Number<sup>
-The total number of pages of the pdf.
+The sum of all pages from the given pdf.
 
 #### @error <sup>Object<sup>
-Triggered when an error occurred.
+Triggers when an error occurs.
 
 #### @link-clicked <sup>Number<sup>
-Triggered when an internal link is clicked
+Triggers when an internal link is clicked
 
 
 ### Public methods
