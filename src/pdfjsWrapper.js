@@ -1,4 +1,4 @@
-import { PDFLinkService } from '@themainstage/pdfjs-dist/web/pdf_viewer';
+import { PDFLinkService } from 'pdfjs-dist/web/pdf_viewer';
 
 var pendingOperation = Promise.resolve();
 
