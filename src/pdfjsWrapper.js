@@ -1,4 +1,4 @@
-import { PDFLinkService } from 'pdfjs-dist/es5/web/pdf_viewer';
+import { PDFLinkService } from 'pdfjs-dist/web/pdf_viewer';
 
 var pendingOperation = Promise.resolve();
 
@@ -193,7 +193,7 @@ export default function(PDFJS) {
 				if ( canceling )
 					return;
 				canceling = true;
-				pdfRender.cancel();
+				pdfRender.cancel().catch( function(err) { emit('error', err)});
 				return;
 			}
 

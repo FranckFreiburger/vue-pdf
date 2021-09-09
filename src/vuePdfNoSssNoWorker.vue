@@ -1,17 +1,14 @@
 <style src="./annotationLayer.css"></style>
 <script>
+import componentFactory from "./componentFactory.js";
 
-	import componentFactory from './componentFactory.js'
+if (process.env.VUE_ENV !== "server") {
+  var pdfjsWrapper = require("./pdfjsWrapper").default;
+  var PDFJS = require("pdfjs-dist");
+  var component = componentFactory(pdfjsWrapper(PDFJS));
+} else {
+  var component = componentFactory({});
+}
 
-	if ( process.env.VUE_ENV !== 'server' ) {
-
-		var pdfjsWrapper = require('./pdfjsWrapper.js').default;
-		var PDFJS = require('pdfjs-dist/es5/build/pdf.js');
-		var component = componentFactory(pdfjsWrapper(PDFJS));
-	} else {
-
-		var component = componentFactory({});
-	}
-
-	export default component;
+export default component;
 </script>
