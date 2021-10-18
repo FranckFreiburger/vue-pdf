@@ -189,13 +189,17 @@ export default function(PDFJS) {
 
 		this.renderPage = function(rotate) {
 			if ( pdfRender !== null ) {
-
-				if ( canceling )
+				if ( canceling ) {
 					return;
+				}
 				canceling = true;
-				pdfRender.cancel().catch(function(err) {
-					emitEvent('error', err);
-				});
+
+				let prom = pdfRender.cancel();
+				if (prom) {
+					prom.catch(function(err) {
+						emitEvent('error', err);
+					});
+				}
 				return;
 			}
 
