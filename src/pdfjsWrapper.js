@@ -215,7 +215,7 @@ export default function(PDFJS) {
 			pdfRender = pdfPage.render({
 				canvasContext: canvasElt.getContext('2d'),
 				viewport: viewport
-			});
+			}).catch(function(err) { return err });
 
 			annotationLayerElt.style.visibility = 'hidden';
 			clearAnnotations();
