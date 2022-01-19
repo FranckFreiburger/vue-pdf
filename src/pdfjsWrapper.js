@@ -364,7 +364,7 @@ export default function(PDFJS) {
 						}
 					});
 				}
-
+				emitEvent('loading', loadingTask);
 				return loadingTask.promise;
 			})
 			.then(function(pdf) {
