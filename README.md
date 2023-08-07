@@ -164,7 +164,7 @@ export default {
 		}
 	},
 	created(){
-	this.src = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf');
+		this.src = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf');
 	}
 	mounted() {
 
