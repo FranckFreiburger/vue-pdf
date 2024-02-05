@@ -49,6 +49,10 @@ export default function(PDFJS) {
 		var pdfRender = null;
 		var canceling = false;
 
+		this.getPdfDoc = function() {	
+			return pdfDoc;
+		}
+
 		canvasElt.getContext('2d').save();
 
 		function clearCanvas() {
