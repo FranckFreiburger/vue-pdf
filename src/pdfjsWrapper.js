@@ -303,7 +303,7 @@ export default function(PDFJS) {
 
 				pdfPage = page;
 				this.renderPage(rotate);
-				emitEvent('page-loaded', page.pageNumber);
+				emitEvent('page-loaded', page.pageNumber, page);
 			}.bind(this))
 			.catch(function(err) {
 

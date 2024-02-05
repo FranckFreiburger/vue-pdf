@@ -64,7 +64,7 @@ Document loading progress. Range [0, 1].
 #### @loaded
 Triggers when the document is loaded.
 
-#### @page-loaded <sup>Number<sup>
+#### @page-loaded <sup>(pageNumber, pageObject)</sup>
 Triggers when a page is loaded.
 
 #### @num-pages <sup>Number<sup>
