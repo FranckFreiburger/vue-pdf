@@ -24,6 +24,7 @@ export default {
     pdf
   }
 }
+</script>
 ```
 
 ## Demo
