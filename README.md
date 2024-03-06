@@ -152,7 +152,6 @@ export default {
 
 import pdf from 'vue-pdf'
 
-var loadingTask = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf');
 
 export default {
 	components: {
@@ -160,10 +159,13 @@ export default {
 	},
 	data() {
 		return {
-			src: loadingTask,
+			src: null,
 			numPages: undefined,
 		}
 	},
+	created(){
+		this.src = pdf.createLoadingTask('https://cdn.mozilla.net/pdfjs/tracemonkey.pdf');
+	}
 	mounted() {
 
 		this.src.promise.then(pdf => {
