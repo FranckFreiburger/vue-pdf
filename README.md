@@ -1,3 +1,5 @@
+
+
 # vue-pdf
 vue.js pdf viewer is a package for Vue that enables you to display and view PDF's easily via vue components.
 
@@ -237,8 +239,6 @@ export default {
 
 </script>
 ```
-
-
 ##### Example - complete
 ```vue
 <template>
@@ -296,6 +296,84 @@ export default {
 }
 </script>
 ```
+
+##### Example - consume pdf from secured REST endpoint with next, previous, print and current page of total pages navigations
+ ```
+ <template>
+  <div>
+    <div>
+      <button @click="previousPage">Prev</button>
+      <p style="font-weight:bold;font-size:14px;display:inline;">{{page}} of {{numPages}} </p>
+      <button @click="nextPage">Next</button>
+      <button @click="$refs.pdf.print()">Print</button>
+    </div>
+    <div>
+      <div style="width: 100%;">
+	     <pdf :src="pdfContent"
+          :page="page"
+	      @page-loaded="currentPage = $event"
+          @error="error"
+          @num-pages="numPages = $event"
+          ref="pdf">
+        </pdf>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import pdf from 'vue-pdf'
+import axios from 'axios'  //library to make ajax request below
+
+export default {
+  data() {
+    return {
+      pdfContent: null,
+      numPages: 0,
+      page:1,
+      loadedRatio: 1
+    }
+  },
+  components: {
+    pdf: pdf
+  },
+  mounted() {
+    var self = this;
+
+    //Use axios library to make ajax call to REST endpoint that returns pdf as octet stream
+    const authHeader = "Bearer yourAccessTokenGoesHere";
+
+    axios({
+      url: 'http://localhost:8080/sample/pdf',
+      method: 'GET',
+      responseType: 'blob',
+      headers: {
+        'Authorization': authHeader,
+      },
+    }).then((response) => {
+      var blob = new Blob([response.data], {type: 'application/pdf'});
+      var blobURL = window.URL.createObjectURL(blob);
+      self.pdfContent = blobURL;
+    });
+  },
+  methods: {
+    nextPage: function() {
+      //Go to next page if any
+      if(this.page < this.numPages)
+        this.page++;
+    },
+    previousPage: function() {
+      //Go to previous page if not already at page 1
+      if(this.page > 1)
+        this.page--;
+    },
+    error: function(err) {
+			console.log(err);
+		}
+  }
+}
+</script>
+ ```
 
 ## Credits
 [<img src="https://www.franck-freiburger.com/FF.png" width="16"> Franck Freiburger](https://www.franck-freiburger.com)
