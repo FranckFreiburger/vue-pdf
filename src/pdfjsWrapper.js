@@ -49,6 +49,10 @@ export default function(PDFJS) {
 		var pdfRender = null;
 		var canceling = false;
 
+		this.getPdfDoc = function() {	
+			return pdfDoc;
+		}
+
 		canvasElt.getContext('2d').save();
 
 		function clearCanvas() {
@@ -303,7 +307,7 @@ export default function(PDFJS) {
 
 				pdfPage = page;
 				this.renderPage(rotate);
-				emitEvent('page-loaded', page.pageNumber);
+				emitEvent('page-loaded', page.pageNumber, page);
 			}.bind(this))
 			.catch(function(err) {
 
